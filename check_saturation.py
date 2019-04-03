@@ -11,7 +11,7 @@ import numpy as np
 from astropy.io import fits
 import os
 from initialize import loc
-
+import sys
 #%%
 #checks all fits images in a directory for saturation
 def check_saturate(location):
@@ -24,6 +24,10 @@ def check_saturate(location):
     z = 0
     images = glob.glob(location + "/*.fits")
     length = len(location) + 6
+
+    if len(images) ==0:
+	print("No Images")
+	sys.exit(1)
 
     for i in images:
         hdu = fits.open(i)

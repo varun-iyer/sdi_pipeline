@@ -41,13 +41,15 @@ def isis_sub_test(location):
     x = 0
     images = glob.glob(location + "/data/*_A_.fits")
     template = glob.glob(location + "/templates/*.fits")
+
+    cwd = os.getcwd()
+
     if images == []:
         print("-> Subtraction failure: No images to subtract")
     elif len(template) == 1:
         ais_loc = os.path.dirname(initialize.__file__) + "/AIS/package/bin/./mrj_phot"
         initialize.create_configs(location)
         ais_config_loc = location + '/configs/default_config'
-        cwd = os.getcwd()
         os.mkdir(cwd + "/AIS_temp")
         os.chdir(cwd + "/AIS_temp")
         length = len(location) + 5
