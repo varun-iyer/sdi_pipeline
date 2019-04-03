@@ -6,6 +6,7 @@ Created on Thu Sep 13 19:20:13 2018
 @author: andrew
 """
 
+import sdi_pipeline
 from astropy.io import fits
 import matplotlib.pyplot as plt
 import glob

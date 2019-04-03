@@ -5,7 +5,7 @@ Created on Mon Jun  4 13:04:32 2018
 
 @author: andrew
 """
-
+import sdi_pipeline
 import os
 import glob
 import initialize

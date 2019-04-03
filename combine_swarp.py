@@ -5,7 +5,7 @@ Created on Mon Jun  4 13:01:19 2018
 
 @author: andrew
 """
-
+import sdi_pipeline
 import glob
 from initialize import loc
 import os
@@ -32,7 +32,8 @@ def swarp(location):
     if shapes[0] != all(shapes):
         print("-> Cannot use SWarp: images differ in dimension")
     else:
-        config_files = glob.glob(os.path.dirname(stats.__file__) + '/config/*default.swarp')
+        module_path= sdi_pipeline.module_path
+        config_files = glob.glob(module_path + '/config/*default.swarp')
         if config_files != []:
             config_loc = config_files[0]
             template = location + "/templates/swarp_median_" + str(len(images)) + ".fits"

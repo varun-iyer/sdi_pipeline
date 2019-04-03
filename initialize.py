@@ -1,4 +1,6 @@
 from os.path import expanduser
+
+import sdi_pipeline
 import os
 import stats
 import glob
@@ -37,7 +39,7 @@ def create_configs(location):
     check_configs = location + '/configs'
     if os.path.exists(check_configs) == False:
         os.mkdir(check_configs)
-    config_loc = os.path.dirname(stats.__file__) + '/config'
+    config_loc = sdi_pipeline.module_path + '/config'
     for files in glob.glob(config_loc + '/*'):
         os.system('cp -n %s %s' % (files, check_configs))
 
@@ -52,7 +54,7 @@ def INITIALIZE():
         print("-> Error: unknown input")
     ais_install = input("-> Install ISIS image subtraction on this machine? (y/n): ")
     if ais_install == 'y':
-        ais_run = os.path.dirname(stats.__file__) + '/AIS/package/./install.csh'
+        ais_run = sdi_pipeline.module_path + '/AIS/package/./install.csh'
         os.system(ais_run)
     elif ais_install == 'n':
         pass
@@ -71,7 +73,7 @@ if __name__ == '__main__':
         print("-> Error: unknown input")
     ais_install = input("-> Install ISIS image subtraction on this machine? (y/n): ")
     if ais_install == 'y':
-        ais_run = os.path.dirname(stats.__file__) + '/AIS/package/./install.csh'
+        ais_run = sdi_pipeline.module_path + '/AIS/package/./install.csh'
         os.system(ais_run)
     elif ais_install == 'n':
         pass

@@ -6,6 +6,8 @@ Created on Thu Sep 20 17:24:29 2018
 @author: andrew
 """
 
+
+import sdi_pipeline
 import glob
 import os
 import shutil
@@ -18,7 +20,7 @@ def isis_sub(location):
     if images == []:
         print("-> Subtraction failure: No images to subtract")
     elif len(template) == 1:
-        ais_loc = os.path.dirname(initialize.__file__) + "/AIS/package/bin/./mrj_phot"
+        ais_loc = sdi_pipeline.module_name + "/AIS/package/bin/./mrj_phot"
         initialize.create_configs(location)
         ais_config_loc = location + '/configs/default_config'
         cwd = os.getcwd()
@@ -47,7 +49,8 @@ def isis_sub_test(location):
     if images == []:
         print("-> Subtraction failure: No images to subtract")
     elif len(template) == 1:
-        ais_loc = os.path.dirname(initialize.__file__) + "/AIS/package/bin/./mrj_phot"
+
+        ais_loc = sdi_pipeline.module_path + "/AIS/package/bin/./mrj_phot"
         initialize.create_configs(location)
         ais_config_loc = location + '/configs/default_config'
         os.mkdir(cwd + "/AIS_temp")

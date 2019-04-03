@@ -5,7 +5,7 @@ Created on Sat Sep 29 13:10:04 2018
 
 @author: andrew
 """
-
+import sdi_pipeline
 import requests
 from initialize import loc
 import obtain
@@ -106,11 +106,11 @@ def TEST():
 #        lines = source.readlines()
 #        source.close()
 #    
-#    with open(os.path.dirname(sex.__file__) + '/test_config/test_sources.txt', 'r') as test_source:
+#    with open(sdi_pipeline.module_path + '/test_config/test_sources.txt', 'r') as test_source:
 #        lines2 = test_source.readlines()
 #        test_source.close()
         
-    res_image_loc = os.path.dirname(sex.__file__) + '/test_config/09:14:00.260_A_residual_.fits'
+    res_image_loc = sdi_pipeline.module_path + '/test_config/09:14:00.260_A_residual_.fits'
     
     test_image_data = fits.getdata(res_image_loc)
     
@@ -224,11 +224,11 @@ if __name__ == '__main__':
 #        lines = source.readlines()
 #        source.close()
 #    
-#    with open(os.path.dirname(sex.__file__) + '/test_config/test_sources.txt', 'r') as test_source:
+#    with open(sdi_pipeline.module_path + '/test_config/test_sources.txt', 'r') as test_source:
 #        lines2 = test_source.readlines()
 #        test_source.close()
         
-    res_image_loc = os.path.dirname(sex.__file__) + '/test_config/09:14:00.260_A_residual_.fits'
+    res_image_loc = sdi_pipeline.module_path + '/test_config/09:14:00.260_A_residual_.fits'
     
     test_image_data = fits.getdata(res_image_loc)
     
