@@ -33,14 +33,14 @@ def align2(location):
         try:
             aligned = astroalign.register(data1, data2)
         except:
-            view_im = input("\n-> Alignment failed: View trouble image in ds9? (y/n): ")
+            view_im = raw_input("\n-> Alignment failed: View trouble image in ds9? (y/n): ")
             if view_im == 'y':
                 os.system("ds9 -scale zscale %s" % (i))
             elif view_im == 'n':
                 pass
             else:
                 print("-> Unknown input: must be y or n")
-            delete = input("\n-> Delete trouble image from data set? (Do so if image has obvious issues or artifacts) (y/n): ")
+            delete = raw_input("\n-> Delete trouble image from data set? (Do so if image has obvious issues or artifacts) (y/n): ")
             if delete == 'y':
                 os.system("mkdir -p %s/sdi/archive/failed_alignments ; mv %s %s/sdi/archive/failed_alignments" % (loc, i, loc))
                 print("\n-> Moved trouble image to 'failed_alignments' in 'archive' directory")

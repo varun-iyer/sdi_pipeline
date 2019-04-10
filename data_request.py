@@ -168,8 +168,8 @@ def request():
 #        print('\t > Checking data from {} to {}...\n'.format(starting_date, ending_date))
     # Get data from user file:
 #    f = open('userdata.dat', 'r')
-    username = input("-> Enter LCO username: ")
-    password = input("-> Enter LCO password: ")
+    username = raw_input("-> Enter LCO username: ")
+    password = raw_input("-> Enter LCO password: ")
     props = proposals.get_proposals(username, password)
     if props != []:
         print("\n-> Your proposals:\n")
@@ -177,12 +177,12 @@ def request():
             print("\t-> " + i + "\n")
     else:
         print("-> No proposals attached to your account\n")
-    proposal = input("-> Enter proposal you wish to download data from: ")
-    datafolder = input("-> Enter destination of downloaded files (defaut=%s): " % (loc+"/sdi/temp"))
+    proposal = raw_input("-> Enter proposal you wish to download data from: ")
+    datafolder = raw_input("-> Enter destination of downloaded files (defaut=%s): " % (loc+"/sdi/temp"))
     if datafolder == "":
         datafolder = loc + "/sdi/temp"
-    starting_date = input("-> Enter starting date (YYYY-MM-DD): ")
-    ending_date = input("-> Enter ending date (leaving blank will download all data since start date): ")
+    starting_date = raw_input("-> Enter starting date (YYYY-MM-DD): ")
+    ending_date = raw_input("-> Enter ending date (leaving blank will download all data since start date): ")
     if ending_date == "":
         ending_date = time.strftime("%Y-%m-%d")
         c_y, c_m, c_d = ending_date.split('-')

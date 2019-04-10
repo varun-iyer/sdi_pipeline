@@ -45,14 +45,14 @@ def create_configs(location):
 
 #%%
 def INITIALIZE():
-    alert = input("-> Create SDI directories in %s? (y/n)\n" % (loc))
+    alert = raw_input("-> Create SDI directories in %s? (y/n)\n" % (loc))
     if alert == 'y':
         initialize(loc)
     elif alert == 'n':
         print("-> Change loc variable in initialize.py to desired SDI directory path, then run script again")
     else:
         print("-> Error: unknown input")
-    ais_install = input("-> Install ISIS image subtraction on this machine? (y/n): ")
+    ais_install = raw_input("-> Install ISIS image subtraction on this machine? (y/n): ")
     if ais_install == 'y':
         ais_run = sdi_pipeline.module_path + '/AIS/package/./install.csh'
         os.system(ais_run)
@@ -64,14 +64,14 @@ def INITIALIZE():
 #%%
 #if this architecture does not exist, create it
 if __name__ == '__main__':
-    alert = input("-> Create SDI directories in %s? (y/n): " % (loc))
+    alert = raw_input("-> Create SDI directories in %s? (y/n): " % (loc))
     if alert == 'y':
         initialize(loc)
     elif alert == 'n':
         print("-> Change loc variable in initialize.py to desired SDI directory path, then run script again")
     else:
         print("-> Error: unknown input")
-    ais_install = input("-> Install ISIS image subtraction on this machine? (y/n): ")
+    ais_install = raw_input("-> Install ISIS image subtraction on this machine? (y/n): ")
     if ais_install == 'y':
         ais_run = sdi_pipeline.module_path + '/AIS/package/./install.csh'
         os.system(ais_run)

@@ -4,8 +4,8 @@ import subtract_hotpants
 import subtract_ais
 
 def SUBTRACT():
-    path = input("\n-> Enter path to exposure time directory: ")
-    method = input("\n-> Choose subtraction method: hotpants or AIS: ")
+    path = raw_input("\n-> Enter path to exposure time directory: ")
+    method = raw_input("\n-> Choose subtraction method: hotpants or AIS: ")
     if method == 'hotpants':
 #        align_skimage.skimage_template(location)
         subtract_hotpants.hotpants(path)
@@ -18,8 +18,8 @@ def SUBTRACT():
         print("\n-> Error: Unknown method")
 
 if __name__ == '__main__':
-    path = input("\n-> Enter path to exposure time directory: ")
-    method = input("\n-> Choose subtraction method: hotpants or ais: ")
+    path = raw_input("\n-> Enter path to exposure time directory: ")
+    method = raw_input("\n-> Choose subtraction method: hotpants or ais: ")
     if method == 'hotpants':
 #        align_chi2.chi2(location)
         subtract_hotpants.hotpants(path)

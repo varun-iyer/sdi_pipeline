@@ -8,12 +8,12 @@ from combine_residual import combine_MR
                 
 def MR(location):
     check = glob.glob(location + "/residuals/MR*")
-    ask = input("\nCreate master residual? (y/n) : ")
+    ask = raw_input("\nCreate master residual? (y/n) : ")
     if ask == 'y':
             if check == []:
                 combine_MR(location)
             elif check != []:
-                replace = input("\nMaster residual already exists\nDo you want to update it? (y/n) : ")
+                replace = raw_input("\nMaster residual already exists\nDo you want to update it? (y/n) : ")
                 if replace == 'y':
                     os.system("rm %s/residuals/MR*" % (location))
                     combine_MR(location)

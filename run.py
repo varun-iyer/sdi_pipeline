@@ -23,7 +23,7 @@ if __name__ == '__main__':
     print('\t             http://www.deepspace.ucsb.edu            ')
     print('\tContact andrew.henry.stewart@emory.edu for bug reports')
     print('\t -----------------------------------------------------')
-    method = input('-> Enter method: ')
+    method = raw_input('-> Enter method: ')
     if method == 'get':
         get.GET()
     elif method == 'align':

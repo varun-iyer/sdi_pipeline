@@ -14,7 +14,7 @@ def stack_res(location):
     check = glob.glob(location + "/residuals/*MR")
     ask = True
     if check != []:
-        ask = input("\t-> Master residual exists. Replace? (y/n): ")
+        ask = raw_input("\t-> Master residual exists. Replace? (y/n): ")
     elif check == [] or ask == 'y':
         pass
     
