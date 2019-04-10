@@ -80,7 +80,7 @@ def sextractor(location):
         with open(config_loc, 'r') as config:
             data = config.readlines()
             config.close()
-        data[104] = "PSF_NAME" + "        " + location + "/psf/" + name[:-9] + ".psf" + "\n"
+        data[104] = "PSF_NAME" + "        " + location + "/psf/" + name[:-9] + "_A_.psf" + "\n"
         with open(config_loc, 'w') as config:
             config.writelines(data)
             config.close()
