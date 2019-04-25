@@ -48,7 +48,7 @@ def PIPELINE():
             print("\n-> Error: Unknown method")
         ask = raw_input("-> Run sextractor on residual images? (y/n): ")
         if ask == 'y':
-            extract.SEXTRACTOR(path)
+            extract.EXTRACT(path)
         elif ask != 'y' and ask != 'n':
             print("-> Error: unknown input")
 
@@ -90,6 +90,6 @@ if __name__ == '__main__':
             print("\n-> Error: Unknown method")
         ask = raw_input("-> Run sextractor on residual images? (y/n): ")
         if ask == 'y':
-            extract.SEXTRACTOR(path)
+            extract.EXTRACT(path)
         elif ask != 'y' and ask != 'n':
             print("-> Error: unknown input")
