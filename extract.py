@@ -2,7 +2,7 @@ import sex
 import psf
 import glob
 
-def EXTRACT(path):
+def EXTRACT():
     path = raw_input("-> Enter path to target's exposure time directory: ")
     images = glob.glob(path + '/data/*.fits')
     psf_data = glob.glob(path + '/psf/*')
