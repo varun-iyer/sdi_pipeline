@@ -1,22 +1,32 @@
 import align_astroalign
 from ref_image import ref_image
 import check_saturation
+import inspect
+
+# Updated with SDI v1.2
 
 def ALIGN():
-    location = raw_input("-> Enter path to data directory: ")
+    current_processes = str(inspect.getouterframes(inspect.currentframe(), 2))
+    automated = True if "auto.py" in current_processes else False
+    if automated:
+        print("align.py is being ran as a subprocess of auto.py")
+        location = alignment[0]
+        check = alignment[1]
+        move = alignment[2]
+    if not automated: location = raw_input("-> Enter path to data directory: ")
     sat = check_saturation.check_saturate(location)
     if sat == 0:
         ref_image(location)
         align_astroalign.align2(location)
     else:
-        check = raw_input("-> Saturated images found, continue image alignment? (y/n): ")
-        if check == 'y':
-            move = raw_input("-> Move saturated images to SDI archives before continuing? (y/n): ")
+        if not automated: check = raw_input("-> Saturated images found, continue image alignment? (y/n) (leave blank for default = y): ")
+        if ((check == 'y') or (check == '')):
+            if not automated: move = raw_input("-> Move saturated images to SDI archives before continuing? (y/n) (leave blank for default = n): ")
             if move == 'y':
                 check_saturation.move_arch(sat)
                 ref_image(location)
                 align_astroalign.align2(location)
-            elif move == 'n':
+            elif ((move == 'n') or (move == '')):
                 ref_image(location)
                 align_astroalign.align2(location)
             else:
@@ -26,21 +36,30 @@ def ALIGN():
         else:
             print("-> Unknown input: must be y or n")
 
+
+
 if __name__ == '__main__':
-    location = raw_input("-> Enter path to data directory: ")
+    current_processes = str(inspect.getouterframes(inspect.currentframe(), 2))
+    automated = True if "auto.py" in current_processes else False
+    if automated:
+        print("align.py is being ran as a subprocess of auto.py")
+        location = alignment[0]
+        check = alignment[1]
+        move = alignment[2]
+    if not automated: location = raw_input("-> Enter path to data directory: ")
     sat = check_saturation.check_saturate(location)
     if sat == 0:
         ref_image(location)
         align_astroalign.align2(location)
     else:
-        check = raw_input("-> Saturated images found, continue image alignment? (y/n): ")
-        if check == 'y':
-            move = raw_input("-> Move saturated images to SDI archives before continuing? (y/n): ")
+        if not automated: check = raw_input("-> Saturated images found, continue image alignment? (y/n) (leave blank for default = y): ")
+        if ((check == 'y') or (check == '')):
+            if not automated: move = raw_input("-> Move saturated images to SDI archives before continuing? (y/n) (leave blank for default = n): ")
             if move == 'y':
                 check_saturation.move_arch(sat)
                 ref_image(location)
                 align_astroalign.align2(location)
-            elif move == 'n':
+            elif ((move == 'n') or (move == '')):
                 ref_image(location)
                 align_astroalign.align2(location)
             else:

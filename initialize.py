@@ -7,6 +7,8 @@ import glob
 
 loc = expanduser("~")
 
+# Updated with SDI v1.2
+
 #%%
 #run on a new computer to create the sdi file system and use the pipeline
 def initialize(loc):
@@ -45,14 +47,16 @@ def create_configs(location):
 
 #%%
 def INITIALIZE():
-    alert = raw_input("-> Create SDI directories in %s? (y/n)\n" % (loc))
+    alert = 'y'
+    #alert = raw_input("-> Create SDI directories in %s? (y/n): " % (loc))
     if alert == 'y':
         initialize(loc)
     elif alert == 'n':
         print("-> Change loc variable in initialize.py to desired SDI directory path, then run script again")
     else:
         print("-> Error: unknown input")
-    ais_install = raw_input("-> Install ISIS image subtraction on this machine? (y/n): ")
+    #ais_install = raw_input("-> Install ISIS image subtraction on this machine? (y/n): ")
+    ais_install = 'n'
     if ais_install == 'y':
         ais_run = sdi_pipeline.module_path + '/AIS/package/./install.csh'
         os.system(ais_run)
@@ -60,18 +64,26 @@ def INITIALIZE():
         pass
     else:
         print("-> Error: unknown input")
+
         
 #%%
 #if this architecture does not exist, create it
+###
+# Change made on 5.14.19 to remove questions, as we currently do not utilize ISIS image subtraction
+# and we do not need to ask the user if they want to proceed. If they're running .initialize, they should
+# be aware of the directories they're creating, already.
+###
 if __name__ == '__main__':
-    alert = raw_input("-> Create SDI directories in %s? (y/n): " % (loc))
+    alert = 'y'
+    #alert = raw_input("-> Create SDI directories in %s? (y/n): " % (loc))
     if alert == 'y':
         initialize(loc)
     elif alert == 'n':
         print("-> Change loc variable in initialize.py to desired SDI directory path, then run script again")
     else:
         print("-> Error: unknown input")
-    ais_install = raw_input("-> Install ISIS image subtraction on this machine? (y/n): ")
+    #ais_install = raw_input("-> Install ISIS image subtraction on this machine? (y/n): ")
+    ais_install = 'n'
     if ais_install == 'y':
         ais_run = sdi_pipeline.module_path + '/AIS/package/./install.csh'
         os.system(ais_run)
