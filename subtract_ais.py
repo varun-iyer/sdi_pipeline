@@ -20,7 +20,7 @@ def isis_sub(location):
     if images == []:
         print("-> Subtraction failure: No images to subtract")
     elif len(template) == 1:
-        ais_loc = sdi_pipeline.module_name + "/AIS/package/bin/./mrj_phot"
+        ais_loc = sdi_pipeline.module_path + "/AIS/package/bin/./mrj_phot"
         initialize.create_configs(location)
         ais_config_loc = location + '/configs/default_config'
         cwd = os.getcwd()

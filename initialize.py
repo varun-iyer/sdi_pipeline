@@ -8,7 +8,7 @@ import glob
 loc = expanduser("~")
 
 # Updated with SDI v1.2
-
+# Updated June 26 2019; added sim_config check | Alex Polanski
 #%%
 #run on a new computer to create the sdi file system and use the pipeline
 def initialize(loc):
@@ -44,6 +44,14 @@ def create_configs(location):
     config_loc = sdi_pipeline.module_path + '/config'
     for files in glob.glob(config_loc + '/*'):
         os.system('cp -n %s %s' % (files, check_configs))
+
+def create_simconfigs(location):
+    check_simconfigs = location + '/sim_configs'
+    if os.path.exists(check_simconfigs) == False:
+        os.mkdir(check_simconfigs)
+    simconfig_loc = sdi_pipeline.module_path + '/sim_configs'
+    for files in glob.glob(simconfig_loc + '/*'):
+        os.system('cp -n %s %s' % (files, check_simconfigs))
 
 #%%
 def INITIALIZE():
