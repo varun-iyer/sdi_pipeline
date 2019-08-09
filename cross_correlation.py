@@ -7,14 +7,13 @@ import os
 # Function to get flux,xcoord,ycoord
 
 
-def get_data(path, source_im):
+def get_data(path, source_im, master):
     ####################
     #DEFINITIONS
     ####################
     sourcelistfile = path + '/sources/filtered_sources.txt'
     fakelistfile = path + '/sources/fake_list.txt'
-    x_tol=str(input('input x coordinate tolerance (in pixels):'))
-    y_tol=str(input('input y coordinate tolerance (in pixels):'))
+    tol=str(input('input coordinate tolerance (in pixels):'))
     #leaving this tolerance out for now.
     #flux_tol=str(input('input flux tolerance:'))
     sourceflux = []
@@ -64,28 +63,28 @@ def get_data(path, source_im):
     num = 0
     for i in fakepair:
         for j in sourcepair:
-            if np.isclose(i[0],j[0],atol=float(x_tol)) and np.isclose(i[1],j[1],atol=float(y_tol)):
+            if np.isclose(i[0],j[0],atol=float(tol)) and np.isclose(i[1],j[1],atol=float(tol)):
                 foundlist.append((i[0],i[1],i[2],j[2]))
+                delete = np.where(np.all(i==fakepair, axis=1))[0][0]
+                fakepair = np.delete(fakepair,delete,axis=0)
                 num = num + 1
 
-    #for i in fakepair:
-    #    for j in foundlist:
-    #        if (i[0], i[1]) != (j[0],j[1]):
-    #            not_found.append((i[0],i[1],i[2]))
     foundlist = np.array(foundlist)
     #not_found = np.array(not_found)
     ######################
     #OUTPUT FILE
     ######################
-    foundlistfile= open(path + "/sources/foundlist.txt" ,"w+")
+    foundlistfile= open(master + "/foundlist.txt" ,"a+")
+    foundlistfile.write("##### New Run #####\n")
+    foundlistfile.write("#[[x-coord][y-coord][flux][spread model][Found =1.0, Not = 0.0]#\n")
     for i in range(len(foundlist)):
-        foundlistfile.write("%.4f %.4f %.4f %.4f \n" %(foundlist[i][0],foundlist[i][1],foundlist[i][2],foundlist[i][3]))
+        foundlistfile.write("%.4f %.4f %.4f %.4f %.1f\n" %(foundlist[i][0],foundlist[i][1],foundlist[i][2],foundlist[i][3], 1.0))
+    for i in range(len(fakepair)):
+        foundlistfile.write("%.4f %.4f %.4f %.4f %.1f\n" %(fakepair[i][0], fakepair[i][1], fakepair[i][2], 0.0, 0.0))
+    
     foundlistfile.close()
 
-    #notfoundlist= open(path + "/sources/notfoundlist.txt", "w+")
-    #for i in range(len(not_found)):
-    #    notfoundlist.write("%.4f %.4f %.4f \n" %(not_found[i][0],not_found[i][1],not_found[i][2]))
-    #notfoundlist.close()
+    
     print("Cross correlation complete. %s fakes found. The list order is:\n [x-coord][y-coord][flux][spread model]" %(num))
     return(foundlistfile)
 

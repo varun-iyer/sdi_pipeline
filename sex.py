@@ -43,10 +43,11 @@ def src_filter(location):
                 pass
             
     lines = [a for a in lines if a not in del_lin]
-    
+
     with open(source_loc + '/filtered_sources.txt', 'w+') as fil_src:
         fil_src.writelines(lines)
         fil_src.close()
+
 
 #%%
 #runs SExtractor on all residual images in a directory

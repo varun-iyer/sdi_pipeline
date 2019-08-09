@@ -12,6 +12,7 @@ import astropy.convolution as convo
 import numpy as np
 from itertools import product
 import psf_grabber
+import psf_header
 
 def moffat(path):
     #Select images and choose one at random
@@ -21,7 +22,8 @@ def moffat(path):
     source_im = images[rand_num[0]]
     print("\n %s selected as the source image. \n" % (source_im))
     #Grab FWHM
-    fwhm = psf_grabber.psf_grabber(path,source_im)
+    #fwhm = psf_grabber.psf_grabber(path,source_im)
+    fwhm = psf_header.fwhm(path, source_im)
     #Define parameters for Moffat distribution
     beta = 4.765
     alpha = fwhm/(2*np.sqrt(2**(1/beta)-1))
@@ -64,22 +66,22 @@ def moffat(path):
     fake = open(fake_list, 'w+')
     fake.write('#' + source_im + '\n')
     fake.write(
-    '''#   1 NUMBER                 Running object number                                     
-#   2 FLUX_ISO               Isophotal flux                                             [count]
-#   3 X_IMAGE                Object position along x                                    [pixel]
-#   4 Y_IMAGE                Object position along y                                    [pixel]
-#   5 SPREAD_MODEL           Spread parameter from model-fitting \n''')
+    '''# Flux Value
+# X Coordinate
+# Y Coordinate
+# Found? (Y/N)\n''')
     fake.close()
     with open(fake_list, 'a') as catalog:
         for i in pos_flux_pair:
             catalog.write('%d,%d,%d \n' %(i[2],i[1],i[0]))
         catalog.close()
     #Add imperfections to sources and insert into empty matrix
-    vibrations = np.random.randint(1,50)
+    vibrations = np.random.randint(1,30)
     for i in pos_flux_pair:
         flux_frac = np.floor(i[2]/vibrations)
         counts = np.zeros(vibrations)
         for count in counts:
+            pos_dx, pos_dy = i[0], i[1] #Revert deviation point to original x/y
             dx = np.random.randint(-2,2)
             dy = np.random.randint(-2,2)
             pos_dx, pos_dy = (i[0] + dx), (i[1] + dy) 

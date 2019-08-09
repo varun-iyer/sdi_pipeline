@@ -17,7 +17,8 @@ import subtract_hotpants
 import sex
 import psf
 import cross_correlation
-
+import sim_plotter
+import time
 
 if __name__ == '__main__':
     data_dir = raw_input("Enter the path to the data directory:\n")
@@ -33,8 +34,14 @@ if __name__ == '__main__':
     #Remove previous directory (if any) and copy data contents to simulations directory
     path_exists = os.path.exists(sim_dir)
     if path_exists == True:
-        os.system("rm -r %s/%s/sdi/simulations/%s" %(split[1], split[2], split[5]))
+        os.system("rm -r /%s/%s/sdi/simulations/%s" %(split[1], split[2], split[5]))
     os.system("cp -r %s %s/sdi/simulations/" % (target_dir,loc ))
+    #Create master list directory
+    master_dir = '/' + split[1] + '/' + split[2] + '/sdi/simulations/' + split[5] + '_master_list'
+    print(master_dir)
+    path_exists = os.path.exists(master_dir)
+    if path_exists == False:
+        os.system('mkdir %s' %(master_dir))
     #Align and median combine images
     images = glob.glob("%s/*.fits" % (sim_dir))
     check_saturation.check_saturate(sim_dir)
@@ -43,7 +50,6 @@ if __name__ == '__main__':
     combine_numpy.combine_median(sim_dir)
     #Select random science frame, randomize sources and fluxes.
     source_im = moffat_maker.moffat(sim_dir)
-    print(source_im)
     #run the pipeline as usual.
     subtract_hotpants.hotpants(sim_dir[:-5])
     
@@ -58,9 +64,10 @@ if __name__ == '__main__':
         sex.sextractor(sim_dir[:-5])
         sex.src_filter(sim_dir[:-5])
     print("Done. Now cross-correlating sources.")
-    cross_correlation.get_data(sim_dir[:-5], source_im)
-    #graph = raw_input("Continue with the plotting script?\n")
-    #if graph == "yes":
+    time.sleep(2)
+    foundlist = cross_correlation.get_data(sim_dir[:-5], source_im, master_dir)
+    print(source_im)
+    #sim_plotter.plotter(foundlist)
 
 
 
