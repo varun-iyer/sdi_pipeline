@@ -20,7 +20,7 @@ def hotpants(location):
     if len(template) == 1:
         for i in images:
             outputs.append(location + "/residuals/" + i[length:-8] + "_hotpants.fits")
-            os.system("hotpants -inim %s -tmplim %s -outim %s -v 0" % (images[x], template[0], outputs[x]))
+            os.system("hotpants -inim %s -tmplim %s -outim %s" % (images[x], template[0], outputs[x]))
             x += 1
             per = float(x)/float(len(images)) * 100
             print("-> %.1f subtracted..." % (per))
