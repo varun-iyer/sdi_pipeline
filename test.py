@@ -7,24 +7,24 @@ Created on Sat Sep 29 13:10:04 2018
 """
 import sdi_pipeline
 import requests
-from initialize import loc
-import obtain
+from .initialize import loc
+from . import obtain
 import os
 import sys
-import ref_image
-import align_astroalign
-import combine_numpy
+from . import ref_image
+from . import align_astroalign
+from . import combine_numpy
 from astropy.io import fits
 from scipy.ndimage.filters import gaussian_filter
 import numpy as np
 import glob
-import sex
-import psf
-import subtract_ais
-import align_chi2
-import align_imreg
-import align_skimage
-import check_saturation
+from . import sex
+from . import psf
+from . import subtract_ais
+from . import align_chi2
+from . import align_imreg
+from . import align_skimage
+from . import check_saturation
 from os import path
 
 def TEST():
@@ -178,7 +178,7 @@ if __name__ == '__main__':
     else:
         print("Success!! Dir %s created " % data_location)
     '''
-    print("OLD: " + data_location)
+    print(("OLD: " + data_location))
     '''
     print("NEW: " + data_location)
     print(type(old_data_location))

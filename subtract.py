@@ -1,7 +1,7 @@
-from initialize import loc
-from master_residual import MR
-import subtract_hotpants
-import subtract_ais
+from .initialize import loc
+from .master_residual import MR
+from . import subtract_hotpants
+from . import subtract_ais
 import inspect
 
 # Updated with SDI v1.2
@@ -13,8 +13,8 @@ def SUBTRACT():
         print("subtract.py is being ran as a subprocess of auto.py")
         path = subtraction[0]
         method = subtraction[1]
-    if not automated: path = raw_input("\n-> Enter path to exposure time directory: ")
-    if not automated: method = raw_input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
+    if not automated: path = input("\n-> Enter path to exposure time directory: ")
+    if not automated: method = input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
     if method == 'hotpants' or method == '':
 #        align_skimage.skimage_template(location)
         subtract_hotpants.hotpants(path)
@@ -33,8 +33,8 @@ if __name__ == '__main__':
         print("subtract.py is being ran as a subprocess of auto.py")
         path = subtraction[0]
         method = subtraction[1]
-    if not automated: path = raw_input("\n-> Enter path to exposure time directory: ")
-    if not automated: method = raw_input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
+    if not automated: path = input("\n-> Enter path to exposure time directory: ")
+    if not automated: method = input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
     if method == 'hotpants' or method == '':
 #        align_skimage.skimage_template(location)
         subtract_hotpants.hotpants(path)

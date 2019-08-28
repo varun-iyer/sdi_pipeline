@@ -7,7 +7,7 @@ Created on Thu Sep  6 15:13:04 2018
 """
 
 import requests
-from authorization import get_authorization
+from .authorization import get_authorization
 
 def get_proposals(username, password):
     auth = get_authorization(username, password)

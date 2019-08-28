@@ -1,9 +1,9 @@
-import obtain
-from initialize import loc
-from initialize import create
-import data_request
+from . import obtain
+from .initialize import loc
+from .initialize import create
+from . import data_request
 import inspect
-import auto
+from . import auto
 
 # Updated with SDI v1.2
 
@@ -16,14 +16,14 @@ def GET():
         unpack_check = getting[1]
         check = getting[2]
         download_location = getting[3]
-    if not automated: request_check = raw_input("-> Get data from LCO or unpack downloaded data? (dl/unpack) (leave blank for default = unpack): ")
+    if not automated: request_check = input("-> Get data from LCO or unpack downloaded data? (dl/unpack) (leave blank for default = unpack): ")
     if request_check == 'dl':
         data_request.request()
-        if not automated: unpack_check = raw_input("-> Unpack downloaded data? (y/n) (leave blank for default = y): ")
+        if not automated: unpack_check = input("-> Unpack downloaded data? (y/n) (leave blank for default = y): ")
         if ((unpack_check == 'y') or (unpack_check == '')):
             obtain.move(loc+'/sdi/temp')
             obtain.process()
-            if not automated: check = raw_input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
+            if not automated: check = input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
             if ((check == "y") or (check == "")):
                 try:
                     obtain.movetar()
@@ -33,12 +33,12 @@ def GET():
             elif ((check != "y" and check != "") and (check != "n")):
                 print("-> Error: unknown Input")
     elif ((request_check == 'unpack') or (request_check == '')):
-        if not automated: download_location = raw_input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
+        if not automated: download_location = input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
         if download_location == "":
             download_location = "%s/Downloads" % (loc)
         obtain.move(download_location)
         obtain.process()
-        if not automated: check = raw_input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
+        if not automated: check = input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
         if ((check == "y") or (check == "")):
             try:
                 obtain.movetar()
@@ -57,14 +57,14 @@ if __name__ == '__main__':
         unpack_check = getting[1]
         check = getting[2]
         download_location = getting[3]
-    if not automated: request_check = raw_input("-> Get data from LCO or unpack downloaded data? (dl/unpack) (leave blank for default = unpack): ")
+    if not automated: request_check = input("-> Get data from LCO or unpack downloaded data? (dl/unpack) (leave blank for default = unpack): ")
     if request_check == 'dl':
         data_request.request()
-        if not automated: unpack_check = raw_input("-> Unpack downloaded data? (y/n) (leave blank for default = y): ")
+        if not automated: unpack_check = input("-> Unpack downloaded data? (y/n) (leave blank for default = y): ")
         if ((unpack_check == 'y') or (unpack_check == '')):
             obtain.move(loc+'/sdi/temp')
             obtain.process()
-            if not automated: check = raw_input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
+            if not automated: check = input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
             if ((check == "y") or (check == "")):
                 try:
                     obtain.movetar()
@@ -74,12 +74,12 @@ if __name__ == '__main__':
             elif ((check != "y" and check != "") and (check != "n")):
                 print("-> Error: unknown Input")
     elif ((request_check == 'unpack') or (request_check == '')):
-        if not automated: download_location = raw_input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
+        if not automated: download_location = input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
         if download_location == "":
             download_location = "%s/Downloads" % (loc)
         obtain.move(download_location)
         obtain.process()
-        if not automated: check = raw_input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
+        if not automated: check = input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
         if ((check == "y") or (check == "")):
             try:
                 obtain.movetar()

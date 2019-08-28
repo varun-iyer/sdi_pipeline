@@ -2,7 +2,7 @@ from os.path import expanduser
 
 import sdi_pipeline
 import os
-import stats
+from . import stats
 import glob
 
 loc = expanduser("~")
@@ -25,7 +25,7 @@ def initialize(loc):
         os.system("mkdir %s/sdi/archive/templates" % (loc))
         os.system("mkdir %s/sdi/archive/residuals" % (loc))
         os.system("mkdir %s/sdi/scripts" % (loc))
-        print("-> sdi file system created in %s\n" % (loc))
+        print(("-> sdi file system created in %s\n" % (loc)))
     else:
         print("-> SDI architecure already exists on this computer")
     
@@ -34,7 +34,7 @@ def initialize(loc):
 def create(location):
     dirs = ["data", "templates", "residuals", "sources", "psf"]
     for d in dirs: os.system("mkdir %s/%s" % (location, d))
-    print("-> data, templates, residuals, sources, and psf directories created in %s\n" % (location))
+    print(("-> data, templates, residuals, sources, and psf directories created in %s\n" % (location)))
 
 #%%
 def create_configs(location):

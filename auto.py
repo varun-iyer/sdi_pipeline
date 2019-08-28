@@ -1,14 +1,14 @@
 import os
 import readline
-from initialize import loc
-import get
-import align
-import combine
-import subtract
-import extract
+from .initialize import loc
+from . import get
+from . import align
+from . import combine
+from . import subtract
+from . import extract
 import subprocess
-import initialize
-import reset
+from . import initialize
+from . import reset
 
 # Updated with SDI v1.2
 # Automation script for the SETI Pipeline initially written by Jamie Clark. Direct questions for the code to me / other contributors
@@ -41,7 +41,7 @@ def AUTO():
     # This part asks the user if they would like to reset their data structure.
     print("A reset will reset your sdi folder, deleting any data/results you may currently have in it.\n")
     print("Would you like to perform a reset? y/n (leave blank for default = y)")
-    reset_check = raw_input("Input: ")
+    reset_check = input("Input: ")
     if ((reset_check.lower() == "y") or (reset_check == "")):
         reset.RESET()
     elif reset_check == "n":
@@ -50,26 +50,26 @@ def AUTO():
         print("Input not supported. Not going to perform a reset.")
 
     #manual importing script
-    import_check = raw_input("Would you like to import data from /seti_data to %s/Downloads? (y/n) (leave blank for default = y)" % (loc))
+    import_check = input("Would you like to import data from /seti_data to %s/Downloads? (y/n) (leave blank for default = y)" % (loc))
     if import_check.lower() == 'y' or import_check == "":
-        display_check = raw_input("Would you like to display all possible importable files? (leave blank for default = y)")
+        display_check = input("Would you like to display all possible importable files? (leave blank for default = y)")
         if display_check.lower() == "y" or display_check == "":
             possiblefiles = subprocess.check_output("echo $(find /seti_data/raw_data -name *.zip)", shell=True)
             possiblefiles = possiblefiles.replace(" ", "\n")
             options = possiblefiles.split('\n')
             for x in range(1, len(options)):
-                print(str(x) + ": " + str(options[x-1]))
-        filename = raw_input("What is the number of the file you wish to import?")
+                print((str(x) + ": " + str(options[x-1])))
+        filename = input("What is the number of the file you wish to import?")
         if not filename.isdigit(): 
             print("This is not a number. Exiting the script.")
             exit()
-        elif int(filename) not in range(1, len(options)):
+        elif int(filename) not in list(range(1, len(options))):
             print("This is out of bounds. Exiting the script.")
             exit()
         selected_file = options[int(filename)-1]
-        print("Attempting to copy %s to $(pwd)/Downloads/$(basename %s)...." % (selected_file, selected_file))
+        print(("Attempting to copy %s to $(pwd)/Downloads/$(basename %s)...." % (selected_file, selected_file)))
         os.system("cp %s $(pwd)/Downloads/$(basename %s)" % (selected_file, selected_file))
-        print("Executed command to copy %s to $(pwd)/Downloads/$(basename %s)." % (selected_file, selected_file))
+        print(("Executed command to copy %s to $(pwd)/Downloads/$(basename %s)." % (selected_file, selected_file)))
 
     ###
     # this functionality is not done so it is commented out
@@ -80,7 +80,7 @@ def AUTO():
 
 
     print("[E]asy, [I]ntermediate, or [A]dvanced? (leave blank for default = easy)")
-    mode = raw_input("Input: ")
+    mode = input("Input: ")
     if mode.lower() == "easy" or mode.lower() == "e" or mode == "":
         # get values (request_check, unpack_check, check, download_location)
         getting[0] = 'unpack'
@@ -100,37 +100,37 @@ def AUTO():
         getting[1] = 'y'
         getting[2] = 'y'
         os.system('clear') 
-        getting[3] = raw_input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
+        getting[3] = input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
         # alignment values (check,move)
         alignment[1] = 'y'
         alignment[2] = 'n'
         # combine values (method)
         os.system('clear') 
-        combination[1] = raw_input("\n-> Choose combination method-- numpy (default) or swarp: (leave blank for default = numpy): ")
+        combination[1] = input("\n-> Choose combination method-- numpy (default) or swarp: (leave blank for default = numpy): ")
         # subtract values (method)
-        os.system('clear') 
-        subtraction[1] = raw_input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
+        os.system('clear')
+        subtraction[1] = input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
     elif mode.lower() == "advanced" or mode.lower() == "a":
         # get values (request_check, unpack_check, check, download_location)
         os.system('clear') 
-        getting[0] = raw_input("-> Get data from LCO or unpack downloaded data? (dl/unpack) (leave blank for default = unpack): ")
-        os.system('clear') 
-        getting[1] = raw_input("-> Unpack downloaded data? (y/n) (leave blank for default = y): ")
-        os.system('clear') 
-        getting[2] = raw_input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
-        os.system('clear') 
-        getting[3] = raw_input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
+        getting[0] = input("-> Get data from LCO or unpack downloaded data? (dl/unpack) (leave blank for default = unpack): ")
+        os.system('clear')
+        getting[1] = input("-> Unpack downloaded data? (y/n) (leave blank for default = y): ")
+        os.system('clear')
+        getting[2] = input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
+        os.system('clear')
+        getting[3] = input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
         # alignment values (check,move)
-        os.system('clear') 
-        alignment[1] = raw_input("-> Saturated images found, continue image alignment? (y/n) (leave blank for default = y): ")
-        os.system('clear') 
-        alignment[2] = raw_input("-> Move saturated images to SDI archives before continuing? (y/n) (leave blank for default = n): ")
+        os.system('clear')
+        alignment[1] = input("-> Saturated images found, continue image alignment? (y/n) (leave blank for default = y): ")
+        os.system('clear')
+        alignment[2] = input("-> Move saturated images to SDI archives before continuing? (y/n) (leave blank for default = n): ")
         # combine values (method)
-        os.system('clear') 
-        combination[1] = raw_input("\n-> Choose combination method-- numpy (default) or swarp: (leave blank for default = numpy): ")
+        os.system('clear')
+        combination[1] = input("\n-> Choose combination method-- numpy (default) or swarp: (leave blank for default = numpy): ")
         # subtract values (method)
-        os.system('clear') 
-        subtraction[1] = raw_input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
+        os.system('clear')
+        subtraction[1] = input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
     else:
         print("Input not supported")
         exit()
@@ -170,7 +170,7 @@ def AUTO():
     exposurepath = subprocess.check_output("echo $(pwd)/sdi/targets/%s/%s/air/%s" % (target, radec, exposuretime), shell=True)
     exposurepath = exposurepath.replace("\n", "")
 
-    print("Your exposure path is " + exposurepath + ". If this is wrong, check the code.")
+    print(("Your exposure path is " + exposurepath + ". If this is wrong, check the code."))
     ###
     # Sets the path that the machine generates that is fed back, that was just defined. 
     # Alignment and combination call this "location" and subtraction and extraction call this "path".
@@ -227,7 +227,7 @@ if __name__ == '__main__':
     # This part asks the user if they would like to reset their data structure.
     print("A reset will reset your sdi folder, deleting any data/results you may currently have in it.\n")
     print("Would you like to perform a reset? y/n (leave blank for default = y)")
-    reset_check = raw_input("Input: ")
+    reset_check = input("Input: ")
     if ((reset_check.lower() == "y") or (reset_check == "")):
         reset.RESET()
     elif reset_check == "n":
@@ -236,26 +236,26 @@ if __name__ == '__main__':
         print("Input not supported. Not going to perform a reset.")
 
      #manual importing script
-    import_check = raw_input("Would you like to import data from /seti_data to %s/Downloads? (y/n) (leave blank for default = y)" % (loc))
+    import_check = input("Would you like to import data from /seti_data to %s/Downloads? (y/n) (leave blank for default = y)" % (loc))
     if import_check.lower() == 'y' or import_check == "":
-        display_check = raw_input("Would you like to display all possible importable files? (leave blank for default = y)")
+        display_check = input("Would you like to display all possible importable files? (leave blank for default = y)")
         if display_check.lower() == "y" or display_check == "":
             possiblefiles = subprocess.check_output("echo $(find /seti_data/raw_data -name *.zip)", shell=True)
             possiblefiles = possiblefiles.replace(" ", "\n")
             options = possiblefiles.split('\n')
             for x in range(1, len(options)):
-                print(str(x) + ": " + str(options[x-1]))
-        filename = raw_input("What is the number of the file you wish to import?")
+                print((str(x) + ": " + str(options[x-1])))
+        filename = input("What is the number of the file you wish to import?")
         if not filename.isdigit(): 
             print("This is not a number. Exiting the script.")
             exit()
-        elif int(filename) not in range(1, len(options)):
+        elif int(filename) not in list(range(1, len(options))):
             print("This is out of bounds. Exiting the script.")
             exit()
         selected_file = options[int(filename)-1]
-        print("Attempting to copy %s to $(pwd)/Downloads/$(basename %s)...." % (selected_file, selected_file))
+        print(("Attempting to copy %s to $(pwd)/Downloads/$(basename %s)...." % (selected_file, selected_file)))
         os.system("cp %s $(pwd)/Downloads/$(basename %s)" % (selected_file, selected_file))
-        print("Executed command to copy %s to $(pwd)/Downloads/$(basename %s)." % (selected_file, selected_file))
+        print(("Executed command to copy %s to $(pwd)/Downloads/$(basename %s)." % (selected_file, selected_file)))
 
     ###
     # this functionality is not done so it is commented out
@@ -267,7 +267,7 @@ if __name__ == '__main__':
 
 
     print("[E]asy, [I]ntermediate, or [A]dvanced? (leave blank for default = easy)")
-    mode = raw_input("Input: ")
+    mode = input("Input: ")
     if mode.lower() == "easy" or mode.lower() == "e" or mode == "":
         # get values (request_check, unpack_check, check, download_location)
         getting[0] = 'unpack'
@@ -287,37 +287,37 @@ if __name__ == '__main__':
         getting[1] = 'y'
         getting[2] = 'y'
         os.system('clear') 
-        getting[3] = raw_input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
+        getting[3] = input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
         # alignment values (check,move)
         alignment[1] = 'y'
         alignment[2] = 'n'
         # combine values (method)
         os.system('clear') 
-        combination[1] = raw_input("\n-> Choose combination method-- numpy (default) or swarp: (leave blank for default = numpy): ")
+        combination[1] = input("\n-> Choose combination method-- numpy (default) or swarp: (leave blank for default = numpy): ")
         # subtract values (method)
-        os.system('clear') 
-        subtraction[1] = raw_input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
+        os.system('clear')
+        subtraction[1] = input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
     elif mode.lower() == "advanced" or mode.lower() == "a":
         # get values (request_check, unpack_check, check, download_location)
         os.system('clear') 
-        getting[0] = raw_input("-> Get data from LCO or unpack downloaded data? (dl/unpack) (leave blank for default = unpack): ")
-        os.system('clear') 
-        getting[1] = raw_input("-> Unpack downloaded data? (y/n) (leave blank for default = y): ")
-        os.system('clear') 
-        getting[2] = raw_input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
-        os.system('clear') 
-        getting[3] = raw_input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
+        getting[0] = input("-> Get data from LCO or unpack downloaded data? (dl/unpack) (leave blank for default = unpack): ")
+        os.system('clear')
+        getting[1] = input("-> Unpack downloaded data? (y/n) (leave blank for default = y): ")
+        os.system('clear')
+        getting[2] = input("-> Move data into target directory? (y/n) (leave blank for default = y): ")
+        os.system('clear')
+        getting[3] = input("-> Enter LCO data location (leave blank for default=%s/Downloads): " % (loc))
         # alignment values (check,move)
-        os.system('clear') 
-        alignment[1] = raw_input("-> Saturated images found, continue image alignment? (y/n) (leave blank for default = y): ")
-        os.system('clear') 
-        alignment[2] = raw_input("-> Move saturated images to SDI archives before continuing? (y/n) (leave blank for default = n): ")
+        os.system('clear')
+        alignment[1] = input("-> Saturated images found, continue image alignment? (y/n) (leave blank for default = y): ")
+        os.system('clear')
+        alignment[2] = input("-> Move saturated images to SDI archives before continuing? (y/n) (leave blank for default = n): ")
         # combine values (method)
-        os.system('clear') 
-        combination[1] = raw_input("\n-> Choose combination method-- numpy (default) or swarp: (leave blank for default = numpy): ")
+        os.system('clear')
+        combination[1] = input("\n-> Choose combination method-- numpy (default) or swarp: (leave blank for default = numpy): ")
         # subtract values (method)
-        os.system('clear') 
-        subtraction[1] = raw_input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
+        os.system('clear')
+        subtraction[1] = input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
     else:
         print("Input not supported")
         exit()
@@ -357,7 +357,7 @@ if __name__ == '__main__':
     exposurepath = subprocess.check_output("echo $(pwd)/sdi/targets/%s/%s/air/%s" % (target, radec, exposuretime), shell=True)
     exposurepath = exposurepath.replace("\n", "")
 
-    print("Your exposure path is " + exposurepath + ". If this is wrong, check the code.")
+    print(("Your exposure path is " + exposurepath + ". If this is wrong, check the code."))
     ###
     # Sets the path that the machine generates that is fed back, that was just defined. 
     # Alignment and combination call this "location" and subtraction and extraction call this "path".

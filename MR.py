@@ -14,7 +14,7 @@ def stack_res(location):
     check = glob.glob(location + "/residuals/*MR")
     ask = True
     if check != []:
-        ask = raw_input("\t-> Master residual exists. Replace? (y/n): ")
+        ask = input("\t-> Master residual exists. Replace? (y/n): ")
     elif check == [] or ask == 'y':
         pass
     
@@ -44,4 +44,4 @@ for x in range(size_x):
                     stack_im[x,y] = np.mean(sort)
                 pixels = []
                 per += 1
-                print("\t-> %.1f%% percent..." % (float(per)/float(size_x*size_y)))
+                print(("\t-> %.1f%% percent..." % (float(per)/float(size_x*size_y))))

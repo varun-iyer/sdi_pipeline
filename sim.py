@@ -6,7 +6,7 @@ Created on Tue Oct  9 18:34:10 2018
 @author: alex
 """
 import requests
-from initialize import loc
+from .initialize import loc
 import os
 import sys
 import numpy as np
@@ -15,21 +15,21 @@ from astropy.io import fits
 import glob
 from time import strftime
 from time import gmtime
-import ref_image
-import align_astroalign
-import combine_numpy
-import sex
-import psf
-import subtract_hotpants
-import align_chi2
-import align_imreg
-import check_saturation
+from . import ref_image
+from . import align_astroalign
+from . import combine_numpy
+from . import sex
+from . import psf
+from . import subtract_hotpants
+from . import align_chi2
+from . import align_imreg
+from . import check_saturation
 from os import path
 
 
 #### script to take a data set, randomly select a frame in which to insert a transient source and insert it. ####
 
-data_dir = raw_input("Enter path to targets data directory")
+data_dir = input("Enter path to targets data directory")
 split = data_dir.split("/",6)
 target_dir = data_dir.replace(split[6], "")
 sim_dir = data_dir.replace("targets", "simulations")
@@ -67,7 +67,7 @@ rand_num = np.random.randint(0,upper,size=1)
 
 source_im = images[rand_num[0]]
 
-print("\n %s selected as the source image, adding simulated source..." % (source_im))
+print(("\n %s selected as the source image, adding simulated source..." % (source_im)))
 
 hdu = fits.getdata(source_im)
 hdu1 = fits.open(source_im)
@@ -87,11 +87,11 @@ img = gaussian_filter(img, sigma=2.0, mode='constant', truncate=10.0)
 final = fits.PrimaryHDU(hdu+img, header=Header)
 final.writeto(source_im, overwrite=True)
 
-print("\n Source inserted at %s,%s!" %(pos_x,pos_y))
+print(("\n Source inserted at %s,%s!" %(pos_x,pos_y)))
 
 subtract_hotpants.hotpants(sim_dir[:-5])
 
-print("""
+print(("""
 Residual Images Produced. 
 
 Image containing the Souce: %s
@@ -99,4 +99,4 @@ Image containing the Souce: %s
 Source Position: (%s,%s).
 
 Now run the extract command on the simulation time exposure directory.
-""" % (source_im, pos_x, pos_y))
+""" % (source_im, pos_x, pos_y)))

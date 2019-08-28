@@ -10,7 +10,7 @@ import glob
 import numpy as np
 from astropy.io import fits
 import os
-from initialize import loc
+from .initialize import loc
 import sys
 #%%
 #checks all fits images in a directory for saturation
@@ -52,14 +52,14 @@ def check_saturate(location):
 ###removing print statements for a bit
 
     if y > 0:
-        print("\n-> %d/%d saturated images" % (y, len(images)))
-        print("\n-> average saturation level (ADU) = %d" % (np.mean(m)-lin))
+        print(("\n-> %d/%d saturated images" % (y, len(images))))
+        print(("\n-> average saturation level (ADU) = %d" % (np.mean(m)-lin)))
         return im
     if y == 0:
         diff = lin - np.max(Max)
-        print("\n-> no saturated images in %s" % (location))
-        print("\n-> closest value to saturation = %d" % (np.max(Max)))
-        print("\n-> difference between this value and saturation level = %d\n" % (diff))
+        print(("\n-> no saturated images in %s" % (location)))
+        print(("\n-> closest value to saturation = %d" % (np.max(Max))))
+        print(("\n-> difference between this value and saturation level = %d\n" % (diff)))
 
         return y
     

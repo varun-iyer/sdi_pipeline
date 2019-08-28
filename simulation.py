@@ -12,7 +12,7 @@ from astropy.io import fits
 import numpy as np
 import matplotlib.pyplot as plt
 import shutil
-from initialize import loc
+from .initialize import loc
 
 #%%
 #make a copy of target directory in the simulations directory
@@ -216,7 +216,7 @@ def sex_cat(location):
     with open(catalog[0], 'w+') as cat:
         cat.writelines(lines)
         cat.close()
-    print "sources = %d | detections = %d" % (r, p)
+    print("sources = %d | detections = %d" % (r, p))
 
 #P = 0
 #D = []

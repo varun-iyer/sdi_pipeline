@@ -11,7 +11,7 @@ import sdi_pipeline
 import glob
 import os
 import shutil
-import initialize
+from . import initialize
 
 def isis_sub(location):
     x = 0
@@ -33,7 +33,7 @@ def isis_sub(location):
             os.system("mv -f %s/AIS_temp/conv.fits %s/residuals/%sresidual_.fits" % (cwd, location, i[length:-5]))
             x += 1
             per = float(x)/float(len(images)) * 100
-            print("-> %.1f%% subtracted..." % (per))
+            print(("-> %.1f%% subtracted..." % (per)))
     else:
         print("-> Subtraction failure: Template missing")
     os.chdir(cwd)
@@ -62,7 +62,7 @@ def isis_sub_test(location):
             os.system("mv -f %s/AIS_temp/conv.fits %s/residuals/%sresidual_.fits" % (cwd, location, i[length:-5]))
             x += 1
             per = float(x)/float(len(images)) * 100
-            print("-> %.1f%% subtracted..." % (per))
+            print(("-> %.1f%% subtracted..." % (per)))
     else:
         print("-> Subtraction failure: Template missing")
     os.chdir(cwd)

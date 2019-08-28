@@ -1,6 +1,6 @@
-import align_astroalign
-from ref_image import ref_image
-import check_saturation
+from . import align_astroalign
+from .ref_image import ref_image
+from . import check_saturation
 import inspect
 
 # Updated with SDI v1.2
@@ -13,15 +13,15 @@ def ALIGN():
         location = alignment[0]
         check = alignment[1]
         move = alignment[2]
-    if not automated: location = raw_input("-> Enter path to data directory: ")
+    if not automated: location = input("-> Enter path to data directory: ")
     sat = check_saturation.check_saturate(location)
     if sat == 0:
         ref_image(location)
         align_astroalign.align2(location)
     else:
-        if not automated: check = raw_input("-> Saturated images found, continue image alignment? (y/n) (leave blank for default = y): ")
+        if not automated: check = input("-> Saturated images found, continue image alignment? (y/n) (leave blank for default = y): ")
         if ((check == 'y') or (check == '')):
-            if not automated: move = raw_input("-> Move saturated images to SDI archives before continuing? (y/n) (leave blank for default = n): ")
+            if not automated: move = input("-> Move saturated images to SDI archives before continuing? (y/n) (leave blank for default = n): ")
             if move == 'y':
                 check_saturation.move_arch(sat)
                 ref_image(location)
@@ -46,15 +46,15 @@ if __name__ == '__main__':
         location = alignment[0]
         check = alignment[1]
         move = alignment[2]
-    if not automated: location = raw_input("-> Enter path to data directory: ")
+    if not automated: location = input("-> Enter path to data directory: ")
     sat = check_saturation.check_saturate(location)
     if sat == 0:
         ref_image(location)
         align_astroalign.align2(location)
     else:
-        if not automated: check = raw_input("-> Saturated images found, continue image alignment? (y/n) (leave blank for default = y): ")
+        if not automated: check = input("-> Saturated images found, continue image alignment? (y/n) (leave blank for default = y): ")
         if ((check == 'y') or (check == '')):
-            if not automated: move = raw_input("-> Move saturated images to SDI archives before continuing? (y/n) (leave blank for default = n): ")
+            if not automated: move = input("-> Move saturated images to SDI archives before continuing? (y/n) (leave blank for default = n): ")
             if move == 'y':
                 check_saturation.move_arch(sat)
                 ref_image(location)

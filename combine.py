@@ -1,5 +1,5 @@
-import combine_swarp
-import combine_numpy
+from . import combine_swarp
+from . import combine_numpy
 import inspect
 
 # Updated with SDI v1.2
@@ -11,8 +11,8 @@ def COMBINE():
         print("combine.py is being ran as a subprocess of auto.py")
         location = combination[0]
         method = combination[1]
-    if not automated: location = raw_input("-> Enter path to data directory: ")
-    if not automated: method = raw_input("\n-> Choose combination method-- numpy (default) or swarp: ")
+    if not automated: location = input("-> Enter path to data directory: ")
+    if not automated: method = input("\n-> Choose combination method-- numpy (default) or swarp: ")
     if method == "swarp":
         combine_swarp.swarp(location)
     elif method == "numpy" or method == "":
@@ -27,8 +27,8 @@ if __name__ == '__main__':
         print("combine.py is being ran as a subprocess of auto.py")
         location = combination[0]
         method = combination[1]
-    if not automated: location = raw_input("-> Enter path to data directory: ")
-    if not automated: method = raw_input("\n-> Choose combination method-- numpy (default) or swarp: ")
+    if not automated: location = input("-> Enter path to data directory: ")
+    if not automated: method = input("\n-> Choose combination method-- numpy (default) or swarp: ")
     if method == "swarp":
         combine_swarp.swarp(location)
     elif method == "numpy" or method == "":

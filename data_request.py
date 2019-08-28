@@ -13,8 +13,8 @@ import time
 import calendar
 import requests
 import numpy as np
-import proposals
-from initialize import loc
+from . import proposals
+from .initialize import loc
 
 #
 #def parse_args():
@@ -72,7 +72,7 @@ def download_frames(sdate, edate, headers, prop, datafolder):
 
     frames = response['results']
     if len(frames) != 0:
-        print('\t-> Frames identified for the '+sdate+'/'+edate+' period. Checking frames...')
+        print(('\t-> Frames identified for the '+sdate+'/'+edate+' period. Checking frames...'))
         while True:
             for frame in frames:
                 nidentified += 1
@@ -93,7 +93,7 @@ def download_frames(sdate, edate, headers, prop, datafolder):
                    '_cat.fits' != frame['filename'][-9:]:
 #                    if args.spectra and not frame['filename'].endswith('.tar.gz'):
 #                        continue
-                    print('->   + File '+frame['filename']+' not found in '+outpath)
+                    print(('->   + File '+frame['filename']+' not found in '+outpath))
                     print('->     Downloading ...')
                     with open(os.path.join(outpath, frame['filename']), 'wb') as f:
                         f.write(requests.get(frame['url']).content)
@@ -168,21 +168,21 @@ def request():
 #        print('\t > Checking data from {} to {}...\n'.format(starting_date, ending_date))
     # Get data from user file:
 #    f = open('userdata.dat', 'r')
-    username = raw_input("-> Enter LCO username: ")
-    password = raw_input("-> Enter LCO password: ")
+    username = input("-> Enter LCO username: ")
+    password = input("-> Enter LCO password: ")
     props = proposals.get_proposals(username, password)
     if props != []:
         print("\n-> Your proposals:\n")
         for i in props:
-            print("\t-> " + i + "\n")
+            print(("\t-> " + i + "\n"))
     else:
         print("-> No proposals attached to your account\n")
-    proposal = raw_input("-> Enter proposal you wish to download data from: ")
-    datafolder = raw_input("-> Enter destination of downloaded files (defaut=%s): " % (loc+"/sdi/temp"))
+    proposal = input("-> Enter proposal you wish to download data from: ")
+    datafolder = input("-> Enter destination of downloaded files (defaut=%s): " % (loc+"/sdi/temp"))
     if datafolder == "":
         datafolder = loc + "/sdi/temp"
-    starting_date = raw_input("-> Enter starting date (YYYY-MM-DD): ")
-    ending_date = raw_input("-> Enter ending date (leaving blank will download all data since start date): ")
+    starting_date = input("-> Enter starting date (YYYY-MM-DD): ")
+    ending_date = input("-> Enter ending date (leaving blank will download all data since start date): ")
     if ending_date == "":
         ending_date = time.strftime("%Y-%m-%d")
         c_y, c_m, c_d = ending_date.split('-')
@@ -228,8 +228,8 @@ def request():
         # Download frames in the defined time ranges:
         nidentified, ndownloaded = download_frames(sdate, edate, headers, proposal, datafolder)
         if nidentified != 0:
-            print('-> Final count: ' + str(nidentified) + ' identified frames, downloaded ' +
-                  str(ndownloaded) + ' new ones.')
+            print(('-> Final count: ' + str(nidentified) + ' identified frames, downloaded ' +
+                  str(ndownloaded) + ' new ones.'))
 
         # Get next year, month and day to look for. If it matches the user-defined
         # or current date, then we are done:

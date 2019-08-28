@@ -8,7 +8,7 @@ Created on Mon Jun  4 13:04:32 2018
 import sdi_pipeline
 import os
 import glob
-import initialize
+from . import initialize
 
 def src_filter(location):
     source_loc = location + '/sources'
@@ -87,8 +87,8 @@ def sextractor(location):
         os.system("sextractor %s[0]> %s/temp/%s.txt -c %s" % (i, sources, name, config_loc))
         x += 1
         per = float(x)/float(len(images)) * 100
-        print("-> %.1f%% sextracted..." % (per))
-    print("-> SExtracted %d images, catalogues placed in 'sources' directory\n" % (len(images)))
+        print(("-> %.1f%% sextracted..." % (per)))
+    print(("-> SExtracted %d images, catalogues placed in 'sources' directory\n" % (len(images))))
     print("-> Filtering source catalogs...\n")
     src_filter(location)
     
@@ -124,7 +124,7 @@ def sextractor_psf(location):
         os.system("sextractor %s[0] -c %s" % (i, config_loc))
         x += 1
         per = float(x)/float(len(images)) * 100
-        print("-> %.1f%% sextracted..." % (per))
-    print("-> SExtracted %d images, catalogues placed in 'psf' directory\n" % (len(images)))
+        print(("-> %.1f%% sextracted..." % (per)))
+    print(("-> SExtracted %d images, catalogues placed in 'psf' directory\n" % (len(images))))
 
     

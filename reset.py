@@ -1,5 +1,5 @@
 import os
-import initialize
+from . import initialize
 
 # Updated with SDI v1.2
 

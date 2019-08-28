@@ -7,7 +7,7 @@ Created on Thu Sep 13 16:26:57 2018
 """
 
 import glob
-from initialize import loc
+from .initialize import loc
 import os
 from time import strftime
 from time import gmtime

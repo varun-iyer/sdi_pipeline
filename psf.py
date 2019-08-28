@@ -8,7 +8,7 @@ Created on Mon Oct  1 20:09:18 2018
 
 import glob
 import os
-import initialize
+from . import initialize
 
 def psfex(location):
     psf_loc = location + '/psf'

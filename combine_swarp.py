@@ -7,11 +7,11 @@ Created on Mon Jun  4 13:01:19 2018
 """
 import sdi_pipeline
 import glob
-from initialize import loc
+from .initialize import loc
 import os
 from time import strftime
 from time import gmtime
-import stats
+from . import stats
 from astropy.io import fits
 import numpy as np
 

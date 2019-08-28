@@ -1,5 +1,5 @@
-import sex
-import psf
+from . import sex
+from . import psf
 import glob
 import inspect
 
@@ -11,7 +11,7 @@ def EXTRACT():
     if automated:
         print("extract.py is being ran as a subprocess of auto.py")
         path = extraction[0]
-    if not automated: path = raw_input("-> Enter path to target's exposure time directory: ")
+    if not automated: path = input("-> Enter path to target's exposure time directory: ")
     images = glob.glob(path + '/data/*.fits')
     psf_data = glob.glob(path + '/psf/*')
     if len(psf_data) == 3*len(images):
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     if automated:
         print("extract.py is being ran as a subprocess of auto.py")
         path = extraction[0]
-    if not automated: path = raw_input("-> Enter path to target's exposure time directory: ")
+    if not automated: path = input("-> Enter path to target's exposure time directory: ")
     images = glob.glob(path + '/data/*.fits')
     psf_data = glob.glob(path + '/psf/*')
     if len(psf_data) == 3*len(images):

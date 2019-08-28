@@ -30,6 +30,6 @@ def chi2(location):
             hdu.writeto(i[:-8] + '_A_.fits')
             os.remove(i)
             x += 1
-            print("-> %.1f%% aligned..." % (float(x)/float(len(images)) * 100))
+            print(("-> %.1f%% aligned..." % (float(x)/float(len(images)) * 100)))
     else:
         print("-> Alignment failed: Template missing")
