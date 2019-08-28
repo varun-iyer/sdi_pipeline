@@ -329,7 +329,7 @@ if __name__ == '__main__':
         Data_Location = "%s/Downloads" % (loc)
     else:
         Data_Location = getting[3]
-    Downloadscontents = subprocess.check_output("echo $(ls %s)" % (Data_Location), shell=True)
+    Downloadscontents = subprocess.check_output("echo $(ls %s)" % (Data_Location), shell=True).decode('utf-8')
     if ".zip" not in Downloadscontents: 
         print("Error: No Data Found")
         exit()
