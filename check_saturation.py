@@ -27,7 +27,7 @@ def check_saturate(location):
 
     if len(images) ==0:
         print("No Images")
-    sys.exit(1)
+        sys.exit(1)
 
     for i in images:
         hdu = fits.open(i)
