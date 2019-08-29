@@ -24,7 +24,7 @@ def align3(location):
         hdu1 = fits.open(i)
         data1 = hdu1[0].data
         data1 = np.array(data1, dtype="float64")
-        aligned = astroalign.register(data1, data2)
+        aligned, footprint = astroalign.register(data1, data2)
         aligned_name = i[:-8] + "_AT_.fits"
         hdu = fits.PrimaryHDU(aligned, header=hdu1[0].header)
         hdu.writeto(aligned_name)

@@ -31,7 +31,7 @@ def align2(location):
 #        transf, (source_list, target_list) = astroalign.find_transform(data1, data2)
 #        aligned = astroalign.apply_transform(transf, data1, data2)
         try:
-            aligned = astroalign.register(data1, data2)
+            aligned, footprint= astroalign.register(data1, data2)
         except:
             view_im = input("\n-> Alignment failed: View trouble image in ds9? (y/n): ")
             if view_im == 'y':
