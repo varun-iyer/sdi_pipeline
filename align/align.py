@@ -80,7 +80,7 @@ def align(source_s, reference, method="astroalign"):
             try:
                 output = astroalign.register(np_src, np_ref)[0]
             except NameError:
-                rase ValueError(_dis.format(method, "astroalign"))
+                raise ValueError(_dis.format(method, "astroalign"))
         elif method == "skimage":
             try:
                 shift, error, diffphase = register_translation(np_ref, np_src, 100)
