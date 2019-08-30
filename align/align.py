@@ -34,8 +34,10 @@ _hdu_types = (ExtensionHDU, ImageHDU, PrimaryHDU)
 def _to_np(np_or_hdu):
     """
     Returns a numpy array or the data; or throws an error.
-    Only for internal use within align.py
+    Only for internal use within align/
     """
+    # FIXME the original `align_astroalign` upcasts to float64
+    # is this necessary?
     if isinstance(np_or_hdu, np.ndarray):
         return np_or_hdu
     elif isinstance(np_or_hdu, _hdu_types):
