@@ -106,4 +106,4 @@ def align(source_s, reference, method="astroalign"):
             output = PrimaryHDU(output, source.header)
         outputs.append(output)
 
-    return outputs if len(outputs) > 1 else outputs[0]
+    return outputs if isinstance(source_s, list) else outputs[0]
