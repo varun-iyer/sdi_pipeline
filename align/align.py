@@ -26,6 +26,7 @@ except ImportError:
 # types
 from numpy import ndarray
 from astropy.io.fits.hdu.image import ExtensionHDU, ImageHDU, PrimaryHDU
+from .ref_image import ref_image
 
 
 _hdu_types = (ExtensionHDU, ImageHDU, PrimaryHDU)
@@ -49,22 +50,22 @@ def _to_np(np_or_hdu):
 _dis = "Alignment method {} is disabled because the {} module(s) is/are not installed."
 
  
-def align(source_s, reference, method="astroalign"):
+def align(source_s, reference=None, method="astroalign"):
     """
     Aligns the source astronomical image(s) to the reference astronomical image
     Arguments:
         source_s -- the image(s) to align; fitsio HDU object, numpy array,
             or a list of either one of the above
-        reference -- the image against which to align the source image;
-            fitsio HDU object or numpy array
     Keyword Arguments:
+        reference -- the image against which to align the source image;
+            fitsio HDU object or numpy array. If None, the best option is chosen
+            from among the sources.
         method -- the library to use to align the images. options are:
             astroalign (default), skimage, imreg, skimage, chi2
     Return:
         returns a transformed copy of the source image[s] in the same data type
         which was passed in
     """
-    np_ref = _to_np(reference)
     # make sure that we can handle source as a list
     sources = []
     outputs = []
@@ -72,6 +73,10 @@ def align(source_s, reference, method="astroalign"):
         sources = source_s
     else:
         sources.append(source_s)
+         
+    if reference is None:
+        reference = ref_image(sources)
+    np_ref = _to_np(reference)
 
     for source in sources:
         np_src = _to_np(source)
