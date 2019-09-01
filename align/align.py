@@ -1,35 +1,41 @@
-# general
+"""
+align -- this module aligns sets of astronomical data
+History
+    Created/Substantially refactored on 2019-09-01
+        Varun Iyer <varun_iyer@ucsb.edu>
+"""
+# general imports
 import numpy as np
-_unable = "Unable to find {} module(s); {} alignment method is disabled."
+# types
+from astropy.io.fits.hdu.image import ExtensionHDU, ImageHDU, PrimaryHDU
+from .ref_image import ref_image
+
+UNABLE = "Unable to find {} module(s); {} alignment method is disabled."
 # for astroalign method
 try:
     import astroalign
 except ImportError:
-    print(_unable.format("astroalign", "astroalign"))
+    print(UNABLE.format("astroalign", "astroalign"))
 # for skimage method
 try:
     from skimage.feature import register_translation
     from scipy.ndimage import fourier_shift
 except ImportError:
-    print(_unable.format("skimage or scipy", "skimage"))
+    print(UNABLE.format("skimage or scipy", "skimage"))
 # for chi2 method
 try:
     from image_registration import chi2_shift
     from image_registration import fft_tools
 except ImportError:
-    print(_unable.format("image_registration", "chi2"))
+    print(UNABLE.format("image_registration", "chi2"))
 # for imreg method
 try:
     import imreg_dft
 except ImportError:
-    print(_unable.format("imreg_dft", "imreg"))
-# types
-from numpy import ndarray
-from astropy.io.fits.hdu.image import ExtensionHDU, ImageHDU, PrimaryHDU
-from .ref_image import ref_image
+    print(UNABLE.format("imreg_dft", "imreg"))
 
 
-_hdu_types = (ExtensionHDU, ImageHDU, PrimaryHDU)
+HDU_TYPES = (ExtensionHDU, ImageHDU, PrimaryHDU)
 
 
 def _to_np(np_or_hdu):
@@ -41,15 +47,14 @@ def _to_np(np_or_hdu):
     # is this necessary?
     if isinstance(np_or_hdu, np.ndarray):
         return np_or_hdu
-    elif isinstance(np_or_hdu, _hdu_types):
+    if isinstance(np_or_hdu, HDU_TYPES):
         return np_or_hdu.data
-    else:
-        raise TypeError("Cannot align to unexpected type {}".format( \
-                        type(np_or_hdu)))
+    raise TypeError("Cannot align to unexpected type {}".format( \
+                    type(np_or_hdu)))
 
-_dis = "Alignment method {} is disabled because the {} module(s) is/are not installed."
+DISABLED = "Alignment method {} is disabled because the {} module(s) is/are not installed."
 
- 
+
 def align(source_s, reference=None, method="astroalign"):
     """
     Aligns the source astronomical image(s) to the reference astronomical image
@@ -73,7 +78,7 @@ def align(source_s, reference=None, method="astroalign"):
         sources = source_s
     else:
         sources.append(source_s)
-         
+
     if reference is None:
         reference = ref_image(sources)
     np_ref = _to_np(reference)
@@ -87,29 +92,29 @@ def align(source_s, reference=None, method="astroalign"):
             try:
                 output = astroalign.register(np_src, np_ref)[0]
             except NameError:
-                raise ValueError(_dis.format(method, "astroalign"))
+                raise ValueError(DISABLED.format(method, "astroalign"))
         elif method == "skimage":
             try:
-                shift, error, diffphase = register_translation(np_ref, np_src, 100)
+                shift = register_translation(np_ref, np_src, 100)[0]
                 output_fft = fourier_shift(np.fft.fftn(np_src), shift)
                 output = np.fft.ifftn(output_fft)
             except NameError:
-                raise ValueError(_dis.format(method, "scipy or numpy"))
+                raise ValueError(DISABLED.format(method, "scipy or numpy"))
         elif method == "chi2":
             try:
-                dx, dy, edx, edy = chi2_shift(np_ref, np_src, upsample_factor='auto')
+                dx, dy = chi2_shift(np_ref, np_src, upsample_factor='auto')[:2]
                 output = fft_tools.shift.shiftnd(data, (-dx, -dy))
             except NameError:
-                raise ValueError(_dis.format(method, "image_registration"))
+                raise ValueError(DISABLED.format(method, "image_registration"))
         elif method == "imreg":
             try:
                 output = imreg_dft.similarity(np_ref, np_src)["timg"]
             except NameError:
-                raise ValueError(_dis.format(method, "imreg_dft"))
+                raise ValueError(DISABLED.format(method, "imreg_dft"))
         else:
             raise ValueError("Unexpected alignment method {}!".format(method))
 
-        if isinstance(source, _hdu_types):
+        if isinstance(source, HDU_TYPES):
             output = PrimaryHDU(output, source.header)
         outputs.append(output)
 
