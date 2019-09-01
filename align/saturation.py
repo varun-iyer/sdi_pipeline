@@ -1,6 +1,13 @@
-from .align import _to_np
- 
-  
+"""
+saturation
+determines how saturated astronomical data is based on information
+in its fits header
+History
+    Substantially refactored on 2019-09-01
+        Varun Iyer <varun_iyer@ucsb.edu>
+"""
+
+
 def saturation(hdu):
     """
     Calculates the ratio of saturated pixels in data.
@@ -13,16 +20,16 @@ def saturation(hdu):
     # look at docs for saturation in astroalign
     # the algorithm currently being used is suspect at best
     datas = []
-    if isinstance(data, list):
-        datas = data
+    if isinstance(hdu, list):
+        datas = hdu
     else:
-        datas.append(data)
+        datas.append(hdu)
 
     outputs = []
     for datum in datas:
-        sat = hdu.header['SATURATE']
-        lin = hdu.header['MAXLIN']
-        saturated = (hdu > max(lin, sat)).sum()
+        sat = datum.header['SATURATE']
+        lin = datum.header['MAXLIN']
+        saturated = (datum > max(lin, sat)).sum()
         outputs.append(sum(saturated) / saturated.size)
 
-    return outputs if isinstance(data, list) else outputs[0]
+    return outputs if isinstance(hdu, list) else outputs[0]
