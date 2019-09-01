@@ -1,10 +1,13 @@
-import glob
+"""
+ref_image finds the best reference image from a set of astronomical data
+History
+Subtantially refactored on 2019-09-01
+    Varun Iyer <varun_iyer@ucsb.edu>
+"""
 import numpy as np
-from astropy.io import fits
-import os
 from .align import _to_np
 
- 
+
 def ref_image(fits_list):
     """
     Given a list-like set of fits data, ref_image finds the one most suitable
