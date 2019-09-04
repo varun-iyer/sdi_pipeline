@@ -1,47 +1,32 @@
-from .initialize import loc
-from .master_residual import MR
-from . import subtract_hotpants
-from . import subtract_ais
-import inspect
+import glob
+import subprocess.check_output
+from astropy.io import fits
 
-# Updated with SDI v1.2
 
-def SUBTRACT():
-    current_processes = str(inspect.getouterframes(inspect.currentframe(), 2))
-    automated = True if "auto.py" in current_processes else False
-    if automated:
-        print("subtract.py is being ran as a subprocess of auto.py")
-        path = subtraction[0]
-        method = subtraction[1]
-    if not automated: path = input("\n-> Enter path to exposure time directory: ")
-    if not automated: method = input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
-    if method == 'hotpants' or method == '':
-#        align_skimage.skimage_template(location)
-        subtract_hotpants.hotpants(path)
-#        MR(path)
-    elif method == 'AIS':
-#        align_chi2.chi2(location)
-        subtract_ais.isis_sub(path)
-#        MR(path)
+# FIXME this tmpdir should be in a config file rather than direclty in python
+TMPDIR = "/tmp"
+
+
+def subtract(data, template, method="hotpants"):
+    datas = []
+    if isinstance(data, list):
     else:
-        print("\n-> Error: Unknown method")
+        datas.append(data)
+    if method != "hotpants":
+        # TODO see below
+        raise NotImplementedError("Subtraction methods other that hotpants (IBIS, AIS) are unimplemented.")
+    tmplim = "{}/tmplim.fits".format(TMPDIR)
+    fits.writeto(tmpllim, template)
+    outputs = []
+    for d in data:
+        inim = "{}/inim.fits".format(TMPDIR)
+        fits.writeto(inim, d)
+        outim = "{}/outim.fits".format(TMPDIR)
+        sub_out = subprocess.check_output(
+            "hotpants -inim {} -timplm {} -outim {}".format(inim, tmplim, outim),
+            shell=True
+        )
+        outputs.append(fits.open(outim)[0])
+    return outputs
 
-if __name__ == '__main__':
-    current_processes = str(inspect.getouterframes(inspect.currentframe(), 2))
-    automated = True if "auto.py" in current_processes else False
-    if automated:
-        print("subtract.py is being ran as a subprocess of auto.py")
-        path = subtraction[0]
-        method = subtraction[1]
-    if not automated: path = input("\n-> Enter path to exposure time directory: ")
-    if not automated: method = input("\n-> Choose subtraction method: hotpants or AIS: (leave blank for default = hotpants): ")
-    if method == 'hotpants' or method == '':
-#        align_skimage.skimage_template(location)
-        subtract_hotpants.hotpants(path)
-#        MR(path)
-    elif method == 'AIS':
-#        align_chi2.chi2(location)
-        subtract_ais.isis_sub(path)
-#        MR(path)
-    else:
-        print("\n-> Error: Unknown method")
+
