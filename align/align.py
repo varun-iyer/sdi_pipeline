@@ -8,6 +8,7 @@ HISTORY
 import numpy as np
 # types
 from common import to_np, HDU_TYPES
+from astropy.io.fits import PrimaryHDU
 from .ref_image import ref_image
 
 UNABLE = "Unable to find {} module(s); {} alignment method is disabled."
