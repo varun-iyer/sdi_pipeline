@@ -4,7 +4,7 @@ import inspect
 
 # Updated with SDI v1.2
 
-def COMBINE():
+def combine():
     current_processes = str(inspect.getouterframes(inspect.currentframe(), 2))
     automated = True if "auto.py" in current_processes else False
     if automated:
