@@ -20,7 +20,8 @@ def ref_image(fits_list):
     best = fits_list[0]
     best_mean = np.mean(best)
     for data in fits_list:
-        data_mean = np.mean(to_np(data, "Cannot determine mean of unexpected type {}; expected Numpy Array or FITS HDU"))
+        data_mean = np.mean(to_np(data, """Cannot determine mean of unexpected 
+            type {}; expected Numpy Array or FITS HDU"""))
         if data_mean < best_mean:
             best = data
             best_mean = data_mean
