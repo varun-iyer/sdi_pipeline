@@ -28,5 +28,3 @@ def subtract(data, template, method="hotpants"):
         )
         outputs.append(fits.open(outim)[0])
     return outputs
-
-
