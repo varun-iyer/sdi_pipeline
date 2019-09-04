@@ -8,6 +8,7 @@ History
 import numpy as np
 # types
 from astropy.io.fits.hdu.image import ExtensionHDU, ImageHDU, PrimaryHDU
+from common import to_np
 from .ref_image import ref_image
 
 UNABLE = "Unable to find {} module(s); {} alignment method is disabled."
@@ -38,20 +39,6 @@ except ImportError:
 HDU_TYPES = (ExtensionHDU, ImageHDU, PrimaryHDU)
 
 
-def _to_np(np_or_hdu):
-    """
-    Returns a numpy array or the data; or throws an error.
-    Only for internal use within align/
-    """
-    # FIXME the original `align_astroalign` upcasts to float64
-    # is this necessary?
-    if isinstance(np_or_hdu, np.ndarray):
-        return np_or_hdu
-    if isinstance(np_or_hdu, HDU_TYPES):
-        return np_or_hdu.data
-    raise TypeError("Cannot align to unexpected type {}".format( \
-                    type(np_or_hdu)))
-
 DISABLED = "Alignment method {} is disabled because the {} module(s) is/are not installed."
 
 
@@ -81,10 +68,10 @@ def align(source_s, reference=None, method="astroalign"):
 
     if reference is None:
         reference = ref_image(sources)
-    np_ref = _to_np(reference)
+    np_ref = to_np(reference, "Cannot align to unexpected type {}; expected numpy array or FITS HDU")
 
     for source in sources:
-        np_src = _to_np(source)
+        np_src = to_np(source, "Cannot align unexpected type {}; expected numpy array or FITS HDU")
         # possibly unneccessary but unsure about scoping
         output = np.array([])
 
