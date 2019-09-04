@@ -11,10 +11,10 @@ History
 def saturation(hdu):
     """
     Calculates the ratio of saturated pixels in data.
-    Arguments
-    hdu -- fitsio HDU or list containing HDUs
-    Returns
-    (# of sat. pixels) / (# of pixels) or a list of ratios
+    ARGUMENTS
+        hdu -- fitsio HDU or list containing HDUs
+    RETURNS
+        (# of sat. pixels) / (# of pixels) or a list of ratios
     """
     # TODO Maybe look for saturated 'blobs' instead? Or use a saturation lib,
     # look at docs for saturation in astroalign

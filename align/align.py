@@ -1,6 +1,6 @@
 """
 align -- this module aligns sets of astronomical data
-History
+HISTORY
     Created/Substantially refactored on 2019-09-01
         Varun Iyer <varun_iyer@ucsb.edu>
 """
@@ -41,17 +41,17 @@ DISABLED = "Alignment method {} is disabled because the {} module(s) is/are not 
 def align(source_s, reference=None, method="astroalign"):
     """
     Aligns the source astronomical image(s) to the reference astronomical image
-    Arguments:
+    ARGUMENTS
         source_s -- the image(s) to align; fitsio HDU object, numpy array,
             or a list of either one of the above
-    Keyword Arguments:
+    KEYWORD ARGUMENTS
         reference -- the image against which to align the source image;
             fitsio HDU object or numpy array. If None, the best option is chosen
             from among the sources.
         method -- the library to use to align the images. options are:
             astroalign (default), skimage, imreg, skimage, chi2
-    Return:
-        returns a transformed copy of the source image[s] in the same data type
+    RETURNS
+        a transformed copy of the source image[s] in the same data type
         which was passed in
     """
     # make sure that we can handle source as a list
