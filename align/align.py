@@ -7,8 +7,7 @@ History
 # general imports
 import numpy as np
 # types
-from astropy.io.fits.hdu.image import ExtensionHDU, ImageHDU, PrimaryHDU
-from common import to_np
+from common import to_np, HDU_TYPES
 from .ref_image import ref_image
 
 UNABLE = "Unable to find {} module(s); {} alignment method is disabled."
@@ -34,9 +33,6 @@ try:
     import imreg_dft
 except ImportError:
     print(UNABLE.format("imreg_dft", "imreg"))
-
-
-HDU_TYPES = (ExtensionHDU, ImageHDU, PrimaryHDU)
 
 
 DISABLED = "Alignment method {} is disabled because the {} module(s) is/are not installed."
