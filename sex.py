@@ -58,30 +58,37 @@ def sextractor(location):
     check_temp = os.path.exists(sources + '/temp')
     length = len(residuals) + 1
     if check == False:
+        print("FALSE!! FIRST IF")
         os.system("mkdir %s" % (sources))
         os.system("mkdir %s/temp" % (sources))
     else:
         if check_temp == False:
+            print("FALSE!! FIRST ELSE/IF")
             os.system("mkdir %s/temp" % (sources))
     images = glob.glob(residuals + "/*.fits")
     initialize.create_configs(location)
     config_loc = location + '/configs/default.sex'
     with open(config_loc, 'r') as config:
+        print("DEBUG: FIRST OPEN READ")
         data = config.readlines()
         config.close()
     data[9] = "PARAMETERS_NAME" + "        " + location + "/configs/default.param" + "\n"
     data[20] = "FILTER_NAME" + "        " + location + "/configs/default.conv" + "\n"
     with open(config_loc, 'w') as config:
+        print("DEBUG: FIRST OPEN WRITE")
         config.writelines(data)
         config.close()
     print("\n-> SExtracting images...")
     for i in images:
+        print("DEBUG: For loop i in images!")
         name = i[length:-5]
         with open(config_loc, 'r') as config:
+            print("DEBUG: second OPEN READ")
             data = config.readlines()
             config.close()
         data[104] = "PSF_NAME" + "        " + location + "/psf/" + name[:-9] + "_A_.psf" + "\n"
         with open(config_loc, 'w') as config:
+            print("DEBUG: second OPEN WRITE")
             config.writelines(data)
             config.close()
         os.system("sextractor %s[0]> %s/temp/%s.txt -c %s" % (i, sources, name, config_loc))
