@@ -18,7 +18,7 @@ from .sextractor import Sextractor
 _cdir = path.dirname(os.path.realpath(__file__))
  
 # TODO these should be in YAML
-PSFEX_PARAMS = "{}/default.psfex".format(_cdir)
-DEFAULT_CONV = "{}/default.conv".format(_cdir)
-PSF_SEX = "{}/psf.sex"
+PSFEX_PARAMS_PATH = "{}/default.psfex".format(_cdir)
+DEFAULT_CONV_PATH = "{}/default.conv".format(_cdir)
+PSF_SEX_PATH = "{}/psf.sex"
 TMPDIR = "/tmp"
