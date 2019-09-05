@@ -7,12 +7,9 @@ HISTORY
 """
 import subprocess.check_output
 from astropy.io import fits
+from config import TMPDIR
 
-
-# FIXME this tmpdir should be in a config file rather than direclty in python
-TMPDIR = "/tmp"
-
-
+ 
 def subtract(sources, template, method="hotpants"):
     """
     Subtract takes the difference of a set of astronomical data from a template
