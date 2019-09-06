@@ -6,7 +6,7 @@ History:
 """
 from subprocess import check_output
 from astropy.io import fits
-import ..config
+from .. import config
 
 
 def _ex_sci_conf(conf_name, cat_name):
