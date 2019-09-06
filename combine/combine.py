@@ -4,12 +4,8 @@ History:
     Created/Extensively Refactored 2019-09-05
         Andrew Bluth <abluth@ucsb.edu>
 """
-
-from . import combine_swarp
-from . import combine_numpy
-import inspect
-from astropy.io import fits
-from common import to_np
+import numpy as np
+from ..common import to_np
 
 def combine(hdu_s, method="numpy"):
     """
