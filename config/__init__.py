@@ -15,7 +15,7 @@ from os import path
 from .sextractor import Sextractor
  
  
-_cdir = path.dirname(os.path.realpath(__file__))
+_cdir = path.dirname(path.realpath(__file__))
  
 # TODO these should be in YAML
 PSFEX_PARAMS_PATH = "{}/default.psfex".format(_cdir)

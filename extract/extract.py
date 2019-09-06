@@ -6,7 +6,7 @@ History:
 """
 from subprocess import check_output
 from astropy.io import fits
-import config
+import ..config
 
 
 def _ex_sci_conf(conf_name, cat_name):
@@ -71,8 +71,8 @@ def extract(science, residual):
     for sci, res in zip(science, residual):
         sci.writeto(tmpimage)
         # TODO the original bizzarely had [0] after the filename, is that nec.?
-        check_output("sextractor {} -c {}".format(tmpimage, tmpconf)
-        check_output("psfex {} > {} -c {}".format(tmpcat, tmppsf, tmpconf)
+        check_output("sextractor {} -c {}".format(tmpimage, tmpconf))
+        check_output("psfex {} > {} -c {}".format(tmpcat, tmppsf, tmpconf))
         sci.writeto(tmpimage)
         sources_string = check_output("sextractor {} -c {}".format(tmpimage, tmpconf))
         outputs.append(sources_string)

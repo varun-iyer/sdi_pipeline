@@ -5,9 +5,9 @@ HISTORY
     Created/Extensively Refactored 2019-09-04
         Varun Iyer <varun_iyer@ucsb.edu>
 """
-import subprocess.check_output
+from subprocess import check_output
 from astropy.io import fits
-from config import TMPDIR
+from ..config import TMPDIR
 
  
 def subtract(sources, template, method="hotpants"):
