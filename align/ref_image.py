@@ -8,6 +8,9 @@ import numpy as np
 from ..common import to_np
 
 
+INV_TYPE_ERR = """Cannot determine mean of unexpected type {}; expected Numpy Array or FITS HDU"""
+
+
 def ref_image(fits_list):
     """
     Given a list-like set of fits data, ref_image finds the one most suitable
@@ -18,10 +21,9 @@ def ref_image(fits_list):
         A reference to the most suitable array
     """
     best = fits_list[0]
-    best_mean = np.mean(best)
+    best_mean = np.mean(to_np(best, INV_TYPE_ERR))
     for data in fits_list:
-        data_mean = np.mean(to_np(data, """Cannot determine mean of unexpected 
-            type {}; expected Numpy Array or FITS HDU"""))
+        data_mean = np.mean(to_np(data, INV_TYPE_ERR))
         if data_mean < best_mean:
             best = data
             best_mean = data_mean
