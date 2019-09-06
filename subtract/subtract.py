@@ -9,13 +9,14 @@ import os
 from subprocess import check_output
 from astropy.io import fits
 from ..config import TMPDIR
+from ..common import HDU_TYPES
 
  
 def subtract(sources, template, method="hotpants"):
     """
     Subtract takes the difference of a set of astronomical data from a template
     Arguments:
-        data -- a fits HDU, numpy array, or list of either
+        sources -- a fits HDU, numpy array, or list of either
         template -- a template to subtract from, fits HDU or numpy array
     Keyword Arguments: 
         method -- the subtraction algorithm to use; currently only 'hotpants' is
@@ -32,22 +33,34 @@ def subtract(sources, template, method="hotpants"):
             (IBIS, AIS) are unimplemented.""")
     tmplim = "{}/tmplim.fits".format(TMPDIR)
     inim = "{}/inim.fits".format(TMPDIR)
-    os.remove(tmplim)
-    fits.writeto(tmplim, template)
+    try:
+        os.remove(tmplim)
+    except OSError:
+        pass
+    if isinstance(template, HDU_TYPES):
+        template.writeto(tmplim)
+    else:
+        fits.writeto(tmplim, template)
     outputs = []
     for data in data_list:
         # We need to have unique filenames that are persistent in tmpdir 
         # because fitsio uses lazy loading
         # memmap keeping the file open might have left the fileno alone, but
         # I didn’t want to depend on that -- Varun Iyer <varun_iyer@ucsb.edu>
-        fits.writeto(inim, data)
-        outim = "{}/{}_subtracted_.fits".format(TMPDIR, data.header["fname"])
+        try:
+            os.remove(inim)
+        except OSError:
+            pass
+        if isinstance(data, HDU_TYPES):
+            data.writeto(inim)
+        else:
+            fits.writeto(inim, data)
+        outim = "{}/{}_subtracted_.fits".format(TMPDIR, data.header["TRACKNUM"])
         # use check_output so that it throws an error if the return code ain’t
         # good
-        print(subprocess.check_output(
-            "hotpants -inim {} -timplm {} -outim {}".format(inim, tmplim, outim),
+        print(check_output(
+            "hotpants -inim {} -tmplim {} -outim {}".format(inim, tmplim, outim),
             shell=True
         ))
-        os.remove(inim)
         outputs.append(fits.open(outim)[0])
     return outputs if isinstance(sources, list) else outputs[0]
