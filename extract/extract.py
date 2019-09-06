@@ -5,7 +5,9 @@ History:
         Varun Iyer <varun_iyer@ucsb.edu>
 """
 from subprocess import check_output
+from glob import glob
 from astropy.io import fits
+import os
 from .. import config
 
 
@@ -27,8 +29,8 @@ def _psfex_conf(conf_name):
     Sets psf_dir to /tmp
     """
     psf_conf = config.Sextractor(config.PSFEX_DEFAULT)
-    sex_conf["PSF_DIR"] = config.TMPDIR
-    sex_conf.write(conf_name)
+    psf_conf["PSF_DIR"] = config.TMPDIR
+    psf_conf.write(conf_name)
      
       
 def _sex_psf_conf(conf_name):
@@ -64,16 +66,20 @@ def extract(science, residual):
     psfcfg = "{}/psfex.config".format(config.TMPDIR)
     _ex_sci_conf(sex_conf, cat)
     _psfex_conf(psfcfg)
-    _sex_psf_conf(sex_psf_conf, psf_file)
 
     outputs = []
      
     for sci, res in zip(science, residual):
+        os.remove(tmpimage)
         sci.writeto(tmpimage)
         # TODO the original bizzarely had [0] after the filename, is that nec.?
-        check_output("sextractor {} -c {}".format(tmpimage, tmpconf))
-        check_output("psfex {} > {} -c {}".format(tmpcat, tmppsf, tmpconf))
-        sci.writeto(tmpimage)
-        sources_string = check_output("sextractor {} -c {}".format(tmpimage, tmpconf))
+        print(check_output("sextractor {} -c {}".format(tmpimage, sex_conf)), shell=True)
+        print(check_output("psfex {} > {} -c {}".format(tmpcat, tmppsf, psfcfg), shell=True))
+        psf_file = glob("{}/*.psf", config.TMPDIR)[0]
+        _sex_psf_conf(sex_psf_conf, psf_file)
+        os.remove(tmpimage)
+        res.writeto(tmpimage)
+        sources_string = check_output("sextractor {} -c {}".format(tmpimage, sex_psf_conf), shell=True)
+        os.remove(psf_file)
         outputs.append(sources_string)
     return outputs

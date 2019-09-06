@@ -5,6 +5,7 @@ HISTORY
     Created/Extensively Refactored 2019-09-04
         Varun Iyer <varun_iyer@ucsb.edu>
 """
+import os
 from subprocess import check_output
 from astropy.io import fits
 from ..config import TMPDIR
@@ -30,6 +31,8 @@ def subtract(sources, template, method="hotpants"):
         raise NotImplementedError("""Subtraction methods other than hotpants
             (IBIS, AIS) are unimplemented.""")
     tmplim = "{}/tmplim.fits".format(TMPDIR)
+    inim = "{}/inim.fits".format(TMPDIR)
+    os.remove(tmplim)
     fits.writeto(tmplim, template)
     outputs = []
     for data in data_list:
@@ -37,7 +40,7 @@ def subtract(sources, template, method="hotpants"):
         # because fitsio uses lazy loading
         # memmap keeping the file open might have left the fileno alone, but
         # I didn’t want to depend on that -- Varun Iyer <varun_iyer@ucsb.edu>
-        inim = "{}/inim.fits".format(TMPDIR)
+        os.remove(inim)
         fits.writeto(inim, data)
         outim = "{}/{}_subtracted_.fits".format(TMPDIR, data.header["fname"])
         # use check_output so that it throws an error if the return code ain’t
