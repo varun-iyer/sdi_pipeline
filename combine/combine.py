@@ -30,8 +30,6 @@ def combine(hdu_s, method="numpy"):
         #TODO see below
         raise NotImplementedError("""Combine method other than numpy (swarp) 
         is unimplemented.""")
-    print('\n-> Combining images...')
     data = [to_np(i) for i in hdu]
     comb = np.median(data, axis = 0)
-    print("-> image combination successful!")
     return comb
