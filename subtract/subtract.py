@@ -23,9 +23,9 @@ def subtract(sources, template, method="hotpants"):
     """
     data_list = []
     if isinstance(sources, list):
-        datas = sources
+        data_list = sources
     else:
-        datas.append(sources)
+        data_list.append(sources)
     if method != "hotpants":
         # TODO see below
         raise NotImplementedError("""Subtraction methods other than hotpants
@@ -45,9 +45,9 @@ def subtract(sources, template, method="hotpants"):
         outim = "{}/{}_subtracted_.fits".format(TMPDIR, data.header["fname"])
         # use check_output so that it throws an error if the return code ain’t
         # good
-        subprocess.check_output(
+        print(subprocess.check_output(
             "hotpants -inim {} -timplm {} -outim {}".format(inim, tmplim, outim),
             shell=True
-        )
+        ))
         outputs.append(fits.open(outim)[0])
     return outputs if isinstance(sources, list) else outputs[0]
