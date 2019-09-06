@@ -25,7 +25,7 @@ class Sextractor(dict):
                 lexer = shlex(line)
                 lexer.whitespace_split = True
                 key = lexer.get_token()
-                value = lexer.get_token()
+                value = conf.readline().strip()
                 if not (key and value):
                     continue
                 self[key] = value
