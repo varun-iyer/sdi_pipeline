@@ -20,5 +20,7 @@ _cdir = path.dirname(os.path.realpath(__file__))
 # TODO these should be in YAML
 PSFEX_PARAMS_PATH = "{}/default.psfex".format(_cdir)
 DEFAULT_CONV_PATH = "{}/default.conv".format(_cdir)
-PSF_SEX_PATH = "{}/psf.sex"
+SEX_DEFAULT = "{}/default.sex"
+SEX_DEFAULT_VERBOSE = "{}/default_verbose.sex"
+PSFEX_DEFAULT = "{}/psfex.config"
 TMPDIR = "/tmp"
