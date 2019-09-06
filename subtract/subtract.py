@@ -13,10 +13,10 @@ from config import TMPDIR
 def subtract(sources, template, method="hotpants"):
     """
     Subtract takes the difference of a set of astronomical data from a template
-    ARGUMENTS
+    Arguments:
         data -- a fits HDU, numpy array, or list of either
         template -- a template to subtract from, fits HDU or numpy array
-    KEYWORD ARGUMENTS
+    Keyword Arguments: 
         method -- the subtraction algorithm to use; currently only 'hotpants' is
             implemented and it is the default
     """
@@ -33,9 +33,13 @@ def subtract(sources, template, method="hotpants"):
     fits.writeto(tmplim, template)
     outputs = []
     for data in data_list:
+        # We need to have unique filenames that are persistent in tmpdir 
+        # because fitsio uses lazy loading
+        # memmap keeping the file open might have left the fileno alone, but
+        # I didn’t want to depend on that -- Varun Iyer <varun_iyer@ucsb.edu>
         inim = "{}/inim.fits".format(TMPDIR)
         fits.writeto(inim, data)
-        outim = "{}/outim.fits".format(TMPDIR)
+        outim = "{}/{}_subtracted_.fits".format(TMPDIR, data.header["fname"])
         # use check_output so that it throws an error if the return code ain’t
         # good
         subprocess.check_output(
