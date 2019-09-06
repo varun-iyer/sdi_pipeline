@@ -1,5 +1,5 @@
 import numpy as np
-from common import to_np
+from ..common import to_np
 
 def combine(images):
     np_ims = [to_np(i) for i in images]

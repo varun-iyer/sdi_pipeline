@@ -7,7 +7,7 @@ HISTORY
 # general imports
 import numpy as np
 # types
-from common import to_np, HDU_TYPES
+from ..common import to_np, HDU_TYPES
 from astropy.io.fits import PrimaryHDU
 from .ref_image import ref_image
 

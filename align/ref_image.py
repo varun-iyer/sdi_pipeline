@@ -5,7 +5,7 @@ HISTORY
         Varun Iyer <varun_iyer@ucsb.edu>
 """
 import numpy as np
-from common import to_np
+from ..common import to_np
 
 
 def ref_image(fits_list):
