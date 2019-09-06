@@ -40,7 +40,6 @@ def subtract(sources, template, method="hotpants"):
         # because fitsio uses lazy loading
         # memmap keeping the file open might have left the fileno alone, but
         # I didn’t want to depend on that -- Varun Iyer <varun_iyer@ucsb.edu>
-        os.remove(inim)
         fits.writeto(inim, data)
         outim = "{}/{}_subtracted_.fits".format(TMPDIR, data.header["fname"])
         # use check_output so that it throws an error if the return code ain’t
@@ -49,5 +48,6 @@ def subtract(sources, template, method="hotpants"):
             "hotpants -inim {} -timplm {} -outim {}".format(inim, tmplim, outim),
             shell=True
         ))
+        os.remove(inim)
         outputs.append(fits.open(outim)[0])
     return outputs if isinstance(sources, list) else outputs[0]
