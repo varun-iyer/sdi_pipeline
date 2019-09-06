@@ -1,37 +1,7 @@
-from . import combine_swarp
-from . import combine_numpy
-import inspect
+import numpy as np
+from common import to_np
 
-# Updated with SDI v1.2
+def combine(images):
+    np_ims = [to_np(i) for i in images]
+    return np.median(np_ims, axis=0)
 
-def COMBINE():
-    current_processes = str(inspect.getouterframes(inspect.currentframe(), 2))
-    automated = True if "auto.py" in current_processes else False
-    if automated:
-        print("combine.py is being ran as a subprocess of auto.py")
-        location = combination[0]
-        method = combination[1]
-    if not automated: location = input("-> Enter path to data directory: ")
-    if not automated: method = input("\n-> Choose combination method-- numpy (default) or swarp: ")
-    if method == "swarp":
-        combine_swarp.swarp(location)
-    elif method == "numpy" or method == "":
-        combine_numpy.combine_median(location)
-    else:
-        print("-> Error: unknown method entered")
-
-if __name__ == '__main__':
-    current_processes = str(inspect.getouterframes(inspect.currentframe(), 2))
-    automated = True if "auto.py" in current_processes else False
-    if automated:
-        print("combine.py is being ran as a subprocess of auto.py")
-        location = combination[0]
-        method = combination[1]
-    if not automated: location = input("-> Enter path to data directory: ")
-    if not automated: method = input("\n-> Choose combination method-- numpy (default) or swarp: ")
-    if method == "swarp":
-        combine_swarp.swarp(location)
-    elif method == "numpy" or method == "":
-        combine_numpy.combine_median(location)
-    else:
-        print("-> Error: unknown method entered")
