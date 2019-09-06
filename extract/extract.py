@@ -4,82 +4,30 @@ History:
     Created by 2019-09-05
         Varun Iyer <varun_iyer@ucsb.edu>
 """
-from subprocess import check_output
-from glob import glob
-from astropy.io import fits
 import os
-from .. import config
-
-
-def _ex_sci_conf(conf_name, cat_name):
+import sep
+from ..common import to_np
+ 
+ 
+def extract(residual_s, thresh=None):
     """
-    Sets parameters to extract sources from science images
-    Only for internal use in extract
-    """
-    sex_conf = config.Sextractor(config.SEX_DEFAULT)
-    sex_conf["CATALOG_TYPE"] = "FITS_LDAC"
-    sex_conf["CATALOG_NAME"] = cat_name
-    sex_conf["PARAMETERS_NAME"] = config.PSFEX_PARAMS_PATH
-    sex_conf["FILTER_NAME"] = config.DEFAULT_CONV_PATH
-    sex_conf.write(conf_name)
-     
-      
-def _psfex_conf(conf_name):
-    """
-    Sets psf_dir to /tmp
-    """
-    psf_conf = config.Sextractor(config.PSFEX_DEFAULT)
-    psf_conf["PSF_DIR"] = config.TMPDIR
-    psf_conf.write(conf_name)
-     
-      
-def _sex_psf_conf(conf_name):
-    """
-    Sets psf_dir to /tmp
-    """
-    sex_conf = config.Sextractor(config.SEX_DEFAULT)
-    sex_conf["CATALOG_TYPE"] = "ASCII_HEAD"
-    sex_conf["CATALOG_NAME"] = "STDOUT"
-    sex_conf["PARAMETERS_NAME"] = config.PSFEX_PARAMS_PATH
-    sex_conf["FILTER_NAME"] = config.DEFAULT_CONV_PATH
-    sex_conf["PSF_NAME"] = config.DEFAULT_CONV_PATH
-    sex_conf.write(conf_name)
-
-
-def extract(science, residual):
-    """
-    Uses sextractor to determine variable light sources in astronomical data
+    Uses sep to find sources on a residual image(s)
     Arguments:
-        science -- HDU containing science image
-        residual -- HDU containing residual image
+        residuals -- image of residuals from hotpants or a list of images
     Returns:
         A list of Source objects representing the location and various metrics
             of detected variable sources
     """
-    # Change I/O of sextractor to match our purposes
-    # TODO these are really constants
-    img = "{}/temp.fits".format(config.TMPDIR)
-    psf = "{}/temp.psf".format(config.TMPDIR)
-    cat = "{}/temp.cat".format(config.TMPDIR)
-    sex_conf = "{}/temp.sex".format(config.TMPDIR)
-    sex_psf_conf = "{}/temp_psf.sex".format(config.TMPDIR)
-    psfcfg = "{}/psfex.config".format(config.TMPDIR)
-    _ex_sci_conf(sex_conf, cat)
-    _psfex_conf(psfcfg)
-
-    outputs = []
-     
-    for sci, res in zip(science, residual):
-        os.remove(tmpimage)
-        sci.writeto(tmpimage)
-        # TODO the original bizzarely had [0] after the filename, is that nec.?
-        print(check_output("sextractor {} -c {}".format(tmpimage, sex_conf)), shell=True)
-        print(check_output("psfex {} > {} -c {}".format(tmpcat, tmppsf, psfcfg), shell=True))
-        psf_file = glob("{}/*.psf", config.TMPDIR)[0]
-        _sex_psf_conf(sex_psf_conf, psf_file)
-        os.remove(tmpimage)
-        res.writeto(tmpimage)
-        sources_string = check_output("sextractor {} -c {}".format(tmpimage, sex_psf_conf), shell=True)
-        os.remove(psf_file)
-        outputs.append(sources_string)
-    return outputs
+    residuals = []
+    if isinstance(residuals, list):
+        residuals = residual_s
+    else:
+        residuals.append(residual_s)
+    sources = []
+    for r in residuals:
+        r_np = to_np(r).byteswap().newbyteorder()
+        if thresh is None:
+            # from astroalign’s settings
+            thresh = sep.Background(r_np).globalrms * 3
+        sources.append(sep.extract(r_np, thresh, segmentation_map=True))
+    return sources if isinstance(residuals, list) else sources[0]
