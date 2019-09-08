@@ -62,5 +62,7 @@ def subtract(sources, template, method="hotpants"):
             "hotpants -inim {} -tmplim {} -outim {}".format(inim, tmplim, outim),
             shell=True
         ))
-        outputs.append(fits.open(outim)[0])
+        out = fits.open(outim)[0]
+        out.data = out.data.byteswap().newbyteorder()
+        outputs.append(out)
     return outputs if isinstance(sources, list) else outputs[0]
