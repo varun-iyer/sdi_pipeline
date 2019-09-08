@@ -25,9 +25,9 @@ def extract(residual_s, thresh=None):
         residuals.append(residual_s)
     sources = []
     for r in residuals:
-        r_np = to_np(r).byteswap().newbyteorder()
+        r_np = to_np(r)
         if thresh is None:
             # from astroalign’s settings
-            thresh = sep.Background(r_np).globalrms * 3
-        sources.append(sep.extract(r_np, thresh, segmentation_map=True))
+            bkg = sep.Background(r_np)
+        sources.append(sep.extract(r_np - bkg.back(), bkg.globalrms * 3.0, segmentation_map=True))
     return sources if isinstance(residuals, list) else sources[0]
