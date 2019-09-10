@@ -1,0 +1,45 @@
+"""
+light_curves finds the intensity of a list of sources over time
+History:
+    Created on 2019-09-06
+        Varun Iyer <varun_iyer@ucsb.edu>
+"""
+import numpy as np
+import datetime as dt
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from .. import align
+from ..sources import collate
+
+def curves(sources, images, num=100, detected=[], fname="", show=False):
+    """
+    Generate a plot of light curves for each source
+    Arguments:
+        sources -- list of catalog file HDUs
+        images -- list of science images
+    Keyword Arguments:
+        num=100 -- how many of the curves to graph
+        detected=100 -- list of sources to graph in a different color as detected
+        fname="" -- path to save the image; if not "", the image is saved to the
+            specified path
+        show=False -- whether to display the plot
+    """
+    start = [dt.datetime.strptime(
+                " ".join((d.header["DATE"], d.header["UTSTART"])),
+                "%Y-%m-%d %H:%M:%S.%f")
+                for d in images]
+    end = [dt.datetime.strptime(
+                " ".join((d.header["DATE"], d.header["UTSTOP"])),
+                "%Y-%m-%d %H:%M:%S.%f")
+                for d in images]
+    aligned = align.sources(sources) 
+    collated = collate(aligned) 
+    for c in collated[:num]:
+        # FIXME this is just disgusting
+        ordered = list(zip(start, [a.peak for a in c]))
+        ordered.sort(key=lambda x:x[0])
+        plt.plot_date(*list(zip(*ordered)), fmt="o-")
+    if fname:
+        plt.savefig(fname)
+    if show:
+        plt.show() 
