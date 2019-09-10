@@ -8,7 +8,9 @@ from skimage.transform import matrix_transform
 
 class Source:
 
-    def __init__(self, recarray, im, dtype=None):
+    # TODO create __repr__/__str__
+
+    def __init__(self, recarray, im=None, dtype=None):
         """
         Initializes a source object
         Arguments:
@@ -20,7 +22,8 @@ class Source:
         """
         if dtype is None:
             dtype = recarray.dtype
-        for name, value in zip(dtype.names, recarray):
+        # FIXME is the slice iterable conversion necessary?
+        for name, value in zip(dtype.names[:], recarray[:]):
             self.__dict__[name.lower()] = value
         self.image = im
         self.pos = [self.x, self.y]
@@ -37,11 +40,12 @@ class Source:
         """
         self.x_orig = self.x
         self.y_orig = self.y
-        self.x, self.y = matrix_transform([self.x, self.y], T.params)
+        self.x, self.y = matrix_transform([self.x, self.y], T.params)[0]
         self.x_t, self.y_t = self.x, self.y
         self.pos = [self.x, self.y]
+         
 
-    def same(self, source, tolerance=2):
+    def same(self, source, tol=2):
         """
         Determines if the given source is the same as this one in a different
         image
