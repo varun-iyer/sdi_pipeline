@@ -106,12 +106,13 @@ def align(source_s, reference=None, method="astroalign"):
     return outputs if isinstance(source_s, list) else outputs[0]
 
  
-def sources(catalogs, reference=None):
+def sources(sourcelist, reference=None):
     """
-    Takes a list of HDU catalogs and calculates an alignment
-    Returns a list of lists of transformed Source objects
+    Takes a NxM list of sources, where N is the number of images and M is the
+        number of sources in each image
+    Operates in-place.
     Arguments:
-        catalogs -- list of catalogs
+        catalogs -- list of sources
     Keyword Arguments:
         reference -- A set of points to use as a reference; default 0th index
     """
@@ -119,15 +120,10 @@ def sources(catalogs, reference=None):
     # Sources class
     aligned = []
     if reference is None:
-        reference = catalogs[0]
-    npref = [[r["X"], r["Y"]] for r in reference.data]
-    for cat in catalogs:
-        npc = [[c["X"], c["Y"]] for c in cat.data]
-        c_align = []
+        reference = sourcelist[0]
+    npref = [[r.x, r.y] for r in reference]
+    for cat in sourcelist:
+        npc = [[c.x, c.y] for c in cat]
         T, _ = astroalign.find_transform(npc, npref)
-        for source in cat.data:
-            s = Source(source, dtype=cat.data.dtype)
-            s.transform(T)
-            c_align.append(s)
-        aligned.append(c_align)
-    return aligned
+        for source in cat:
+            source.transform(T)

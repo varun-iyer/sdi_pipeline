@@ -8,6 +8,21 @@ from skimage.transform import matrix_transform
 
 class Source:
 
+    def from_hdu(cat, sci):
+        """
+        Returns a list of Sources generated from a catalog image and a science
+        image
+        Arguments:
+            cat -- a HDU catalog
+            sci -- a HDU science image
+        Returns:
+            A list of Sources in the catalog
+        """
+        output = []
+        for c in cat.data:
+            output.append(Source(c, im=sci, dtype=cat.data.dtype))
+        return output
+
     # TODO create __repr__/__str__
 
     def __init__(self, recarray, im=None, dtype=None):
@@ -29,6 +44,7 @@ class Source:
         self.pos = [self.x, self.y]
         if hasattr(self, "ra") and hasattr(self, "dec"):
             self.wcs = [self.ra, self.dec]
+        self.scaled_peak = self._scale_peak(self.peak)
 
     def transform(self, T):
         """
@@ -44,7 +60,6 @@ class Source:
         self.x_t, self.y_t = self.x, self.y
         self.pos = [self.x, self.y]
          
-
     def same(self, source, tol=2):
         """
         Determines if the given source is the same as this one in a different
@@ -60,3 +75,10 @@ class Source:
         if distance < tol ** 2:
             return True
         return False
+
+    # FIXME this should be in an Image/fitsfile class
+    def _scale_peak(self, peak):
+        """
+        Returns the value of a peak scaled to electrons/second
+        """
+        return (self.image.header["GAIN"] * peak) / self.image.header["EXPTIME"]

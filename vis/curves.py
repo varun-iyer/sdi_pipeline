@@ -32,15 +32,16 @@ def curves(sources, images, num=100, detected=[], fname="", show=False):
                 " ".join((d.header["DATE"], d.header["UTSTOP"])),
                 "%Y-%m-%d %H:%M:%S.%f")
                 for d in images]
-    aligned = align.sources(sources) 
-    collated = collate(aligned) 
+    align.sources(sources) 
+    collated = collate(sources) 
+     
     for c in collated[:num]:
         # FIXME do this better
-        ordered = list(zip(start, [a.peak for a in c]))
+        ordered = list(zip(start, [a.scaled_peak for a in c]))
         ordered.sort(key=lambda x:x[0])
         plt.plot_date(*list(zip(*ordered)), fmt="o-")
-    plt.xlabel("Start Time of Image Capture")
-    plt.ylabel("Peak Flux")
+    plt.xlabel("Start Time of Image Capture (UTC)")
+    plt.ylabel("Peak Flux (electrons/second)")
     if fname:
         plt.savefig(fname)
     if show:
