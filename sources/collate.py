@@ -5,16 +5,15 @@ History:
         Varun Iyer <varun_iyer@ucsb.edu>
 """
 import numpy as np
+import datetime as dt
 
 
-def collate(sources, images, thresh=2):
+def collate(sources, thresh=2):
     """
     Correlate takes a list of sources and images and attempts to combine like
     sources
     Arguments:
-        sources -- 2D list of sources.Source objects, with each row
-            corresponding to sources found in a particular image; sources must
-            be transformed
+        sources -- list of Source objects
         images -- list of HDU images
     Keyword Arguments:
         thresh=2 -- how close pixels need to be before they are discarded
@@ -30,20 +29,9 @@ def collate(sources, images, thresh=2):
         sourcelist = [source]
         for im_idx, others in enumerate(sources[1:]):
             for o in others:
-                if sources.same(o):
+                if source.same(o):
                     sourcelist.append(o)
                     continue
         if len(sourcelist) == 10:
             collated.append(sourcelist)
-    starts = [dt.datetime.striptime( \
-                " ".join((d.header["DATE"], d.header["UTSTART"])), \
-                "%Y-%m-%d %H:%M:%S.%f") \
-                for d in images]
-    stops = [dt.datetime.striptime( \
-                " ".join((d.header["DATE"], d.header["UTSTOP"])) \
-                "%Y-%m-%d %H:%M:%S.%f") \
-                for d in images]
-    bts = BinnedTimeSeries(time_bin_start=starts, time_bin_end=stops)
-    for idx, c in enumerate(collated):
-        bts[idx] = c
-    return bts
+    return collated
