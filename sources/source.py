@@ -4,7 +4,7 @@ History:
     Created 2019-09-09
         Varun Iyer <varun_iyer@ucsb.edu>
 """
-from skimage.transformation import matrix_transform
+from skimage.transform import matrix_transform
 
 class Source:
 
@@ -21,7 +21,7 @@ class Source:
         if dtype is None:
             dtype = recarray.dtype
         for name, value in zip(dtype.names, recarray):
-            self.__dict__(name.lower()) = value
+            self.__dict__[name.lower()] = value
         self.image = im
         self.pos = [self.x, self.y]
         if hasattr(self, "ra") and hasattr(self, "dec"):
