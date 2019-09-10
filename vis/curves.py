@@ -35,10 +35,12 @@ def curves(sources, images, num=100, detected=[], fname="", show=False):
     aligned = align.sources(sources) 
     collated = collate(aligned) 
     for c in collated[:num]:
-        # FIXME this is just disgusting
+        # FIXME do this better
         ordered = list(zip(start, [a.peak for a in c]))
         ordered.sort(key=lambda x:x[0])
         plt.plot_date(*list(zip(*ordered)), fmt="o-")
+    plt.xlabel("Start Time of Image Capture")
+    plt.ylabel("Peak Flux")
     if fname:
         plt.savefig(fname)
     if show:
