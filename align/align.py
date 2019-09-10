@@ -10,6 +10,7 @@ import numpy as np
 from ..common import to_np, HDU_TYPES
 from astropy.io.fits import PrimaryHDU
 from .ref_image import ref_image
+from ..sources import Source
 
 UNABLE = "Unable to find {} module(s); {} alignment method is disabled."
 # for astroalign method
@@ -103,3 +104,30 @@ def align(source_s, reference=None, method="astroalign"):
         outputs.append(output)
 
     return outputs if isinstance(source_s, list) else outputs[0]
+
+ 
+def sources(catalogs, reference=None):
+    """
+    Takes a list of HDU catalogs and calculates an alignment
+    Returns a list of lists of transformed Source objects
+    Arguments:
+        catalogs -- list of catalogs
+    Keyword Arguments:
+        reference -- A set of points to use as a reference; default 0th index
+    """
+    # FIXME this is really slow, move to Cython or do some numpy magic with
+    # Sources class
+    aligned = []
+    if reference is None:
+        reference = catalogs[0]
+    npref = [[r["X"], r["Y"]] for r in reference.data]
+    for cat in catalogs:
+        npc = [[c["X"], c["Y"]] for c in cat.data]
+        c_align = []
+        T, _ = astroalign.find_transform(npc, npref)
+        for source in cat.data:
+            s = Source(source, dtype=cat.data.dtype)
+            s.transform(T)
+            c_align.append(s)
+        aligned.append(c_align)
+    return aligned
