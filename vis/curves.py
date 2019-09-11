@@ -11,7 +11,7 @@ import matplotlib.dates as mdates
 from .. import align
 from ..sources import collate
 
-def curves(sources, images, num=100, detected=[], fname="", show=False):
+def curves(sources, images, num=20, detected=[], fname="", show=False):
     """
     Generate a plot of light curves for each source
     Arguments:
@@ -35,14 +35,17 @@ def curves(sources, images, num=100, detected=[], fname="", show=False):
     align.sources(sources) 
     collated = collate(sources) 
      
+    fig = plt.figure()
+    ax = fig.add_subplot(2, 1, 1)
+    ax.set_yscale("log")
     for c in collated[:num]:
         # FIXME do this better
         ordered = list(zip(start, [a.scaled_peak for a in c]))
         ordered.sort(key=lambda x:x[0])
-        plt.plot_date(*list(zip(*ordered)), fmt="o-")
-    plt.xlabel("Start Time of Image Capture (UTC)")
-    plt.ylabel("Peak Flux (electrons/second)")
+        ax.plot_date(*list(zip(*ordered)), fmt="o-")
+    ax.set_xlabel("Start Time of Image Capture (UTC)")
+    ax.set_ylabel("Peak Flux (electrons/second)")
     if fname:
-        plt.savefig(fname)
+        fig.savefig(fname)
     if show:
-        plt.show() 
+        fig.show() 
