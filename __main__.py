@@ -4,7 +4,7 @@ from glob import glob
 from .align import align
 from .combine import combine
 from .subtract import subtract
-from .extract import extract
+from .sources import extract
 import pickle
 
 file_list = argv[1:]
