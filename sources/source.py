@@ -38,13 +38,14 @@ class Source:
         if dtype is None:
             dtype = recarray.dtype
         # FIXME is the slice iterable conversion necessary?
-        for name, value in zip(dtype.names[:], recarray[:]):
+        for name, value in zip(iter(dtype.names), iter(recarray)):
             self.__dict__[name.lower()] = value
         self.image = im
         self.pos = [self.x, self.y]
         if hasattr(self, "ra") and hasattr(self, "dec"):
             self.wcs = [self.ra, self.dec]
-        self.scaled_peak = self._scale_peak(self.peak)
+        if self.image is not None:
+            self.scaled_peak = self._scale_peak(self.peak)
 
     def transform(self, T):
         """
