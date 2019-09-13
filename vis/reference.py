@@ -3,7 +3,7 @@ Plots a fitsfile with found reference stars from the MIT-Amsterdam M31 Catalog
 """
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
-from numpy import ma
+import numpy as np
 from .. import sources
 
 def reference(hdulist_or_cat, sci=None, fname="", show=False):
@@ -30,7 +30,9 @@ def reference(hdulist_or_cat, sci=None, fname="", show=False):
     fig, ax = plt.subplots(1)
     ax.set_aspect("equal")
 
-    ax.imshow(ma.log(sci.data).filled(0))
+    # FIXME please plot this better
+    ax.imshow(sci.data, vmin=np.mean(sci.data), vmax=np.mean(sci.data) * 4,
+                origin="lower")
      
     for c, r in results:
         if len(r) != 1:
