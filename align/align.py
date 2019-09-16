@@ -40,7 +40,7 @@ except ImportError:
 DISABLED = "Alignment method {} is disabled because the {} module(s) is/are not installed."
 
 
-def align(source_s, reference=None, method="astroalign"):
+def image(source_s, reference=None, method="astroalign"):
     """
     Aligns the source astronomical image(s) to the reference astronomical image
     ARGUMENTS
@@ -106,7 +106,7 @@ def align(source_s, reference=None, method="astroalign"):
     return outputs if isinstance(source_s, list) else outputs[0]
 
  
-def sources(sourcelist, reference=None):
+def sources(sourcelist, imagelistreference=None):
     """
     Takes a NxM list of sources, where N is the number of images and M is the
         number of sources in each image
