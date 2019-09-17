@@ -106,7 +106,7 @@ def image(source_s, reference=None, method="astroalign"):
     return outputs if isinstance(source_s, list) else outputs[0]
 
  
-def sources(sourcelist, imagelistreference=None):
+def sources(sourcelist, imagelist=None, reference=None):
     """
     Takes a NxM list of sources, where N is the number of images and M is the
         number of sources in each image
@@ -114,16 +114,25 @@ def sources(sourcelist, imagelistreference=None):
     Arguments:
         catalogs -- list of sources
     Keyword Arguments:
+        imagelist -- An optional list of images which map 1:1 to sources
+            if provided, the calculated transformations will be applied to
+            images
         reference -- A set of points to use as a reference; default 0th index
     """
     # FIXME this is really slow, move to Cython or do some numpy magic with
     # Sources class
     aligned = []
+
     if reference is None:
         reference = sourcelist[0]
+    if imagelist is None:
+        imagelist = [None] * len(sourceslist)
+
     npref = [[r.x, r.y] for r in reference]
-    for cat in sourcelist:
+    for cat, im in zip(sourcelist, imagelist):
         npc = [[c.x, c.y] for c in cat]
         T, _ = astroalign.find_transform(npc, npref)
+        if im is not None:
+            astroalign.apply_transform(T, im, im)
         for source in cat:
             source.transform(T)
