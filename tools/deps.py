@@ -3,7 +3,7 @@ import importlib
 import subprocess
 import re
 
-pydeps = ["numpy", "scipy", "astropy", "pyvo", "skimage", "astroalign", "pytest", "requests", "pylint", "pytest"]
+pydeps = ["numpy", "scipy", "pyd9", "astropy", "pyvo", "skimage", "astroalign", "pytest", "requests", "pylint", "pytest"]
 for dep in pydeps:
 	lib = importlib.import_module(dep)
 	print("{}: {}".format(dep, lib.__version__))

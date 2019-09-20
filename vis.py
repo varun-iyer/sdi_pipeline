@@ -2,14 +2,22 @@
 light_curves finds the intensity of a list of sources over time
 History:
     Created on 2019-09-06
-        Varun Iyer <varun_iyer@ucsb.edu>
+e       Varun Iyer <varun_iyer@ucsb.edu>
 """
+from pyds9 import DS9
 import numpy as np
 import datetime as dt
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from .. import align
-from ..sources import collate
+from . import align
+from .sources import collate
+
+def image(image, sources=[], num=20):
+	d = DS9()
+	d.set_pyfits(image)
+	for s in sources:
+		d.set('regions command {{circle {} {} 40 #text=""}}'.format(*s.pos))
+
 
 def curves(sources, images, num=20, detected=[], fname="", show=False):
     """
