@@ -21,7 +21,7 @@
 * **M** Add filtration techniques; e.g. checking if a source appears as a transient candidate in x% of images, etc.
 * **H** Make a database to store science/processed/results and acces+view easily
 * **E** Logging -- print more information about what the pipeline is doing with a way to filter it
-	* `--log-level=STARWARS`
+	* `--log-level=[MAGIC](http://catb.org/esr/jargon/html/magic-story.html)`
 * **E** PyLinting: clean up existing code with `pylint`
 * **H** Optimize reference star lookup with a wider cone query
 	* Identify the 'same' stars between images with RA/DEC
