@@ -12,15 +12,8 @@ Values:
     TMPDIR -- location of a directory to rw temp files
 """
 from os import path
-from .sextractor import Sextractor
- 
  
 _cdir = path.dirname(path.realpath(__file__))
  
 # TODO these should be in YAML
-PSFEX_PARAMS_PATH = "{}/default.psfex".format(_cdir)
-DEFAULT_CONV_PATH = "{}/default.conv".format(_cdir)
-SEX_DEFAULT = "{}/default.sex".format(_cdir)
-SEX_DEFAULT_VERBOSE = "{}/default_verbose.sex".format(_cdir)
-PSFEX_DEFAULT = "{}/psfex.config".format(_cdir)
 TMPDIR = "/tmp"
