@@ -18,7 +18,7 @@ def collate(sources, thresh=2):
     Keyword Arguments:
         thresh=2 -- how close pixels need to be before they are discarded
     Returns:
-        An astropy TimeSeries
+        A list of sources in chronological order of the images passed in
     """
 
     collated = []

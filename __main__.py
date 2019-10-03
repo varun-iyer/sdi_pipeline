@@ -8,8 +8,8 @@ from .sources import extract
 import pickle
 
 file_list = argv[1:]
-science_images = [fits.open(f)["SCI"] for f in file_list]
-aligned = align.image(science_images)
+images = [fits.open(f) for f in file_list]
+aligned = align.sources(images)
 print("Finished alignment")
 template = combine(aligned)
 print("Finished combine")
