@@ -56,12 +56,17 @@ def subtract(sources, template, method="hotpants"):
         else:
             fits.writeto(inim, data)
         outim = "{}/{}_subtracted_.fits".format(TMPDIR, data.header["TRACKNUM"])
+        try:
+            os.remove(outim)
+        except FileNotFoundError:
+            pass
         # use check_output so that it throws an error if the return code ain’t
         # good
         print(check_output(
             "hotpants -inim {} -tmplim {} -outim {}".format(inim, tmplim, outim),
             shell=True
         ))
+        os.chmod(outim, 666)
         out = fits.open(outim)[0]
         out.data = out.data.byteswap().newbyteorder()
         outputs.append(out)
