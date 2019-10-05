@@ -6,6 +6,7 @@ HISTORY
         Varun Iyer <varun_iyer@ucsb.edu>
 """
 import os
+from getpass import getuser
 from subprocess import check_output
 from astropy.io import fits
 from ..config import TMPDIR
@@ -31,8 +32,8 @@ def subtract(sources, template, method="hotpants"):
         # TODO see below
         raise NotImplementedError("""Subtraction methods other than hotpants
             (IBIS, AIS) are unimplemented.""")
-    tmplim = "{}/tmplim.fits".format(TMPDIR)
-    inim = "{}/inim.fits".format(TMPDIR)
+    tmplim = "{}/{}_tmplim.fits".format(TMPDIR, getuser())
+    inim = "{}/{}_inim.fits".format(TMPDIR, getuser())
     try:
         os.remove(tmplim)
     except OSError:
@@ -55,10 +56,11 @@ def subtract(sources, template, method="hotpants"):
             data.writeto(inim)
         else:
             fits.writeto(inim, data)
-        outim = "{}/{}_subtracted_.fits".format(TMPDIR, data.header["TRACKNUM"])
+
+        outim = "{}/{}_{}_subtracted_.fits".format(TMPDIR, getuser(), data.header["TRACKNUM"])
         try:
             os.remove(outim)
-        except FileNotFoundError:
+        except OSError:
             pass
         # use check_output so that it throws an error if the return code ain’t
         # good
@@ -66,7 +68,6 @@ def subtract(sources, template, method="hotpants"):
             "hotpants -inim {} -tmplim {} -outim {}".format(inim, tmplim, outim),
             shell=True
         ))
-        os.chmod(outim, 666)
         out = fits.open(outim)[0]
         out.data = out.data.byteswap().newbyteorder()
         outputs.append(out)
