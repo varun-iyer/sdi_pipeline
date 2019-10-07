@@ -7,8 +7,10 @@ HISTORY
 # general imports
 import numpy as np
 # types
+from astropy.io.fits import PrimaryHDU, BinTableHDU, ImageHDU
+from astropy.table import Table
+from skimage.transform import matrix_transform
 from ..common import to_np, HDU_TYPES
-from astropy.io.fits import PrimaryHDU
 from .ref_image import ref_image
 from ..sources import Source
 import astroalign
@@ -56,13 +58,14 @@ def image(source_s, reference=None):
  
 def sources(hduls, reference=None):
     """
-    Takes a NxM list of sources, where N is the number of images and M is the
-        number of sources in each image
+    Aligns the images based on the sources in the HDUList Catalog.
     Operates in-place.
     Arguments:
         hduls: A list of hdulists to align
     Keyword Arguments:
         reference -- An HDUL to use as a reference image; default None
+    Returns:
+        the input hduls. operates in place
     """
     # FIXME this is really slow, move to Cython or do some numpy magic with
     # Sources class
@@ -71,9 +74,11 @@ def sources(hduls, reference=None):
     refs = np.array([reference["CAT"].data["X"], reference["CAT"].data["Y"]]).T
     if isinstance(hduls[0], PrimaryHDU):
         hduls = [hduls]
-    outputs = []
     for hdul in hduls:
         sources = np.array([hdul["CAT"].data["X"], hdul["CAT"].data["Y"]]).T
         T, _ = astroalign.find_transform(sources, refs)
-        outputs.append(astroalign.apply_transform(T, hdul["SCI"].data, hdul["SCI"].data)[0])
-    return outputs
+        transformed = matrix_transform(sources, T.params)
+        hdul.append(ImageHDU(astroalign.apply_transform(T, hdul["SCI"].data, hdul["SCI"].data)[0], name="TRS"))
+        # FIXME this should be appended to "CAT" instead of its own thing
+        hdul.append(BinTableHDU(Table(transformed, names=["x", "y"]), name="TRC"))
+    return hduls
