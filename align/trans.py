@@ -59,13 +59,18 @@ def image(source_s, reference=None):
 def sources(hduls, reference=None):
     """
     Aligns the images based on the sources in the HDUList Catalog.
-    Operates in-place.
+    Operates in-place. 
+        TRS: TRansformed Science, the transformed image
+        TRC: TRansformed Catalog, a table of X Y coords from the catalog
     Arguments:
         hduls: A list of hdulists to align
     Keyword Arguments:
         reference -- An HDUL to use as a reference image; default None
     Returns:
         the input hduls. operates in place
+        Adds the TRS and TRC data HDUs toi the HDUlist
+        TRS: TRansformed Science, the input image transformed
+        TRC: TRansformed Catalog, the transformed x,y coords of the cat
     """
     # FIXME this is really slow, move to Cython or do some numpy magic with
     # Sources class
