@@ -12,7 +12,7 @@ from astropy.io import fits
 from ..config import TMPDIR
 from ..common import HDU_TYPES
 
- 
+
 def subtract(sources, template, method="hotpants"):
     """
     Subtract takes the difference of a set of astronomical data from a template

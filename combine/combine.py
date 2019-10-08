@@ -7,6 +7,7 @@ History:
 import numpy as np
 from ..common import to_np
 
+
 def combine(hdu_s, method="numpy"):
     """
     Combine merges a set of astronomical data from a template
@@ -23,9 +24,9 @@ def combine(hdu_s, method="numpy"):
         hdu.append(hdu_s)
 
     if method != "numpy":
-        #TODO see below
+        # TODO see below
         raise NotImplementedError("""Combine method other than numpy (swarp) 
         is unimplemented.""")
     data = [to_np(i) for i in hdu]
-    comb = np.median(data, axis = 0)
+    comb = np.median(data, axis=0)
     return comb
