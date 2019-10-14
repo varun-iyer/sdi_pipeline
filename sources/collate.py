@@ -1,4 +1,5 @@
 """
+collate.py
 Arranges a history of a source in chronological order
 History:
     Created 2019-09-09
@@ -19,6 +20,7 @@ def collate(sources, thresh=2):
         thresh=2 -- how close pixels need to be before they are discarded
     Returns:
         An astropy TimeSeries
+        
     """
 
     collated = []

@@ -1,4 +1,5 @@
 """
+subtract.py
 Subtract employs algorithms to take the difference of set of astronomical data
 from a template
 HISTORY
@@ -23,6 +24,7 @@ def subtract(sources, template, method="hotpants"):
     Keyword Arguments: 
         method -- the subtraction algorithm to use; currently only 'hotpants' is
             implemented and it is the default
+            
     """
     data_list = []
     if isinstance(sources, list):

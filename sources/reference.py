@@ -1,4 +1,5 @@
 """
+reference.py
 reference is a set of methods used to work with the Nasa M31 Star database
 History:
     Created 2019-09-08
@@ -21,7 +22,8 @@ def reference(catalogs, thresh=0.001):
             the number of sigfigs we get from wcs proj. compared to ra/dec
     Returns:
         A list of tuples; each tuple is a catalog and an SCSResults object
-        representing possible matches        
+        representing possible matches   
+             
     """
     cats = []
     if isinstance(catalogs, list):

@@ -1,4 +1,6 @@
 """
+_init_.py
+================================
 Config manages and reads configuration files for the pipeline as well as
 Sextractor and PSFextractor
 History:

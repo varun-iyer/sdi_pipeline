@@ -1,5 +1,6 @@
 """
-to_np
+to_np.py
+==============================
 Takes either a numpy array or a FITS HDU and returns a numpy array
 Used across the pipeline to be as flexible as possible with acceptible inputs
 History
@@ -24,6 +25,7 @@ def to_np(np_or_hdu, err_msg="Cannot process unexpected type {}"):
             optionally formatted with the type that was actually passed in if
             the string contains a '{}'
             default -- 'Cannot process unexpected type {}'
+
     """
     if isinstance(np_or_hdu, np.ndarray):
         return np_or_hdu

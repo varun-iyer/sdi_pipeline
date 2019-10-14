@@ -1,4 +1,6 @@
 """
+saturation.py
+===========================
 saturation
 determines how saturated astronomical data is based on information
 in its fits header
@@ -15,6 +17,7 @@ def saturation(hdu):
         hdu -- fitsio HDU or list containing HDUs
     RETURNS
         (# of sat. pixels) / (# of pixels) or a list of ratios
+        
     """
     # TODO Maybe look for saturated 'blobs' instead? Or use a saturation lib,
     # look at docs for saturation in astroalign

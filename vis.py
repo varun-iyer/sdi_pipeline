@@ -1,8 +1,10 @@
 """
+vis.py
 light_curves finds the intensity of a list of sources over time
 History:
     Created on 2019-09-06
 e       Varun Iyer <varun_iyer@ucsb.edu>
+
 """
 from pyds9 import DS9
 import numpy as np
@@ -31,6 +33,7 @@ def curves(sources, images, num=20, detected=[], fname="", show=False):
         fname="" -- path to save the image; if not "", the image is saved to the
             specified path
         show=False -- whether to display the plot
+        
     """
     start = [dt.datetime.strptime(
                 " ".join((d.header["DATE"], d.header["UTSTART"])),

@@ -1,4 +1,5 @@
 """
+source.py
 Contains a class to accumulate information about point sources in an image
 History:
     Created 2019-09-09
@@ -17,6 +18,7 @@ class Source:
             sci -- a HDU science image
         Returns:
             A list of Sources in the catalog
+
         """
         output = []
         for c in cat.data:
@@ -34,6 +36,7 @@ class Source:
             dtype -- if recarray is a fitsrecord or does not have a .dtype
                 member, you can pass one in
             im -- image this source is from
+
         """
         if dtype is None:
             dtype = recarray.dtype
@@ -54,6 +57,7 @@ class Source:
         The new coordinates can also be found at self.x_t and self.y_t
         Arguments:
             T -- A skimage Transformation to apply
+
         """
         self.x_orig = self.x
         self.y_orig = self.y
@@ -70,6 +74,7 @@ class Source:
         Keyword Arguments:
             tolerance=2 -- the number of pixels away the other source can be
                 before it is "not the same"
+
         """
         # TODO this algorithm can definitely be better
         distance = (self.x - source.x) ** 2 + (self.y - source.y) ** 2
@@ -81,5 +86,6 @@ class Source:
     def _scale_peak(self, peak):
         """
         Returns the value of a peak scaled to electrons/second
+        
         """
         return (self.image.header["GAIN"] * peak) / self.image.header["EXPTIME"]
