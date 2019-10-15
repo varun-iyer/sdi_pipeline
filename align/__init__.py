@@ -7,6 +7,7 @@ METHODS
     align -- performs image registration
     saturation -- determines the saturation level of images
     ref_image -- chooses the best image to use as a reference from a set of ims
+
 """
 from .align import image, sources
 from .saturation import saturation

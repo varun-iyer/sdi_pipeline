@@ -12,6 +12,7 @@ Values:
         for psf
     DEFAULT_CONV -- locaiton of the default convolution file
     TMPDIR -- location of a directory to rw temp files
+
 """
 from os import path
  
