@@ -4,7 +4,7 @@ vis.py
 light_curves finds the intensity of a list of sources over time
 History:
     Created on 2019-09-06
-e       Varun Iyer <varun_iyer@ucsb.edu>
+       Varun Iyer <varun_iyer@ucsb.edu>
 
 """
 from pyds9 import DS9
