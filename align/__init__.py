@@ -1,4 +1,6 @@
 """
+__init__.py align
+
 align contains methods to align astronomical data to the same orientation based
 on a reference image
 METHODS
