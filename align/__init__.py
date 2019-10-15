@@ -3,6 +3,8 @@ __init__.py align
 
 align contains methods to align astronomical data to the same orientation based
 on a reference image
+
+
 METHODS
     align -- performs image registration
     saturation -- determines the saturation level of images
