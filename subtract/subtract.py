@@ -1,5 +1,6 @@
 """
 subtract.py
+
 Subtract employs algorithms to take the difference of set of astronomical data
 from a template
 HISTORY

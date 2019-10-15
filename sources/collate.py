@@ -1,5 +1,6 @@
 """
 collate.py
+
 Arranges a history of a source in chronological order
 History:
     Created 2019-09-09

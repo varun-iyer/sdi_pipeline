@@ -1,5 +1,6 @@
 """
 reference.py
+
 reference is a set of methods used to work with the Nasa M31 Star database
 History:
     Created 2019-09-08

@@ -1,5 +1,6 @@
 """
 source.py
+
 Contains a class to accumulate information about point sources in an image
 History:
     Created 2019-09-09

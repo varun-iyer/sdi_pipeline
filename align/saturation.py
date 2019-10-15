@@ -1,6 +1,6 @@
 """
 saturation.py
-===========================
+
 saturation
 determines how saturated astronomical data is based on information
 in its fits header

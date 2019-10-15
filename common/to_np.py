@@ -1,6 +1,6 @@
 """
 to_np.py
-==============================
+
 Takes either a numpy array or a FITS HDU and returns a numpy array
 Used across the pipeline to be as flexible as possible with acceptible inputs
 History
