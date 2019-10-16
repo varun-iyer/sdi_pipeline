@@ -8,6 +8,9 @@ from .sources import extract
 import pickle
 
 file_list = argv[1:]
+if len(file_list < 2):
+    print("ERROR: Not enough filenames specified. Try\n\t python3 -m sdi_pipeline /path/to/fitsfiles/*.fz\n or something similar.")
+    sys.exit(1)
 science_images = [fits.open(f)["SCI"] for f in file_list]
 aligned = align.image(science_images)
 print("Finished alignment")
