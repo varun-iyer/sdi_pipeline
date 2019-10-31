@@ -36,7 +36,6 @@ try:
 except ImportError:
     print(UNABLE.format("imreg_dft", "imreg"))
 
-
 DISABLED = "Alignment method {} is disabled because the {} module(s) is/are not installed."
 
 
@@ -105,7 +104,7 @@ def image(source_s, reference=None, method="astroalign"):
 
     return outputs if isinstance(source_s, list) else outputs[0]
 
- 
+
 def sources(sourcelist, imagelist=None, reference=None):
     """
     Takes a NxM list of sources, where N is the number of images and M is the
