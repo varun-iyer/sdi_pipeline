@@ -15,8 +15,11 @@ def record(image, path):
     for source in cat.data:
         img = session.query(db.Image).filter(db.Image.lcoid==sci.header["TRACKNUM"]).first()
         if not img:
-            time = datetime.strptime("{} {}".format(sci.header["DATE"],
-                               sci.header["UTSTART"]), '%Y-%m-%d %H:%M:%S.%f')
+            try:
+                time = datetime.strptime("{} {}".format(sci.header["DATE"],
+                                   sci.header["UTSTART"]), '%Y-%m-%d %H:%M:%S.%f')
+            except ValueError:
+                time = datetime.strptime(sci.header["DATE"], '%Y-%m-%dT%H:%M:%S.%f')
             img = db.Image(path=path, time=time, lcoid=sci.header["TRACKNUM"])
             session.add(img)
         r = round(source["ra"], 3)
