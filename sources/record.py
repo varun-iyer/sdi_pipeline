@@ -1,5 +1,7 @@
-from . import db
+import re
 from datetime import datetime
+from . import db
+from astropy.utils.data import compute_hash
 import sep
 
 
@@ -12,20 +14,21 @@ def record(image, path):
     session = db.create_session()
     cat = image["CAT"]
     sci = image["SCI"]
+     
+    hash_ = compute_hash(path)
+    img = session.query(db.Image).filter(db.Image.hash==hash_).first()
+    if img is None:
+        datestr = re.search(r"\d{4}-\d{2}-\d{2}", sci.header["DATE"]).group()
+        timestr = re.search(r"\d{2}:\d{2}:\d{2}\.?\d+", sci.header["UTSTART"]).group()
+        dt = datetime.strptime(" ".join([datestr, timestr]), "%Y-%m-%d %H:%M:%S.%f")
+        img = db.Image(path=path, time=dt, hash=compute_hash(path))
+        session.add(img)
+         
     for source in cat.data:
-        img = session.query(db.Image).filter(db.Image.lcoid==sci.header["TRACKNUM"]).first()
-        if not img:
-            try:
-                time = datetime.strptime("{} {}".format(sci.header["DATE"],
-                                   sci.header["UTSTART"]), '%Y-%m-%d %H:%M:%S.%f')
-            except ValueError:
-                time = datetime.strptime(sci.header["DATE"], '%Y-%m-%dT%H:%M:%S.%f')
-            img = db.Image(path=path, time=time, lcoid=sci.header["TRACKNUM"])
-            session.add(img)
-        r = round(source["ra"], 3)
-        d = round(source["dec"], 3)
+        r = round(source["ra"], 2)
+        d = round(source["dec"], 2)
         rec = session.query(db.Record).filter(db.Record.ra==r, db.Record.dec==d).first()
-        if not rec:
+        if rec is None:
             rec = db.Record(ra=r, dec=d)
             session.add(rec)
         s = db.Source(data=source.__repr__())

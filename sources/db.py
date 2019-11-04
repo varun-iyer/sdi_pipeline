@@ -1,7 +1,7 @@
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, Date, String, Text, Float, ForeignKey
+from sqlalchemy import Column, Integer, DateTime, String, Text, Float, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, backref
 
 
@@ -23,7 +23,7 @@ class Source(Base):
     __tablename__ = "Source"
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     image_id = Column(Integer, ForeignKey('Image.id'))
-    time = Column(Date, ForeignKey('Image.time'))
+    time = Column(DateTime, ForeignKey('Image.time'))
     record_id = Column(Integer, ForeignKey('Record.id'))
     data = Column(Text(255))
 
@@ -35,9 +35,9 @@ class Image(Base):
     __tablename__ = "Image"
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     path = Column(Text(255), unique=True)
-    time = Column(Date, unique=True)
+    time = Column(DateTime, unique=True)
     sources = relationship("Source", backref="image", lazy="dynamic", foreign_keys="Source.image_id")
-    lcoid = Column(Integer, unique=True)
+    hash = Column(Text(32), unique=True, index=True)
 
     def __repr__(self):
         return "<Image {} Time:{} Path:{}>".format(self.id, self.time, self.path)
