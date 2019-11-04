@@ -12,7 +12,7 @@ def record(image):
     cat = image["CAT"]
     sci = image["SCI"]
     for source in cat.data:
-        r = db.Record(ra=source["ra"], dec=source["dec"]
+        r = db.Record(ra=source["ra"], dec=source["dec"])
         session.add(r)
     session.commit()
 
