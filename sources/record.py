@@ -1,8 +1,9 @@
-import db
+from . import db
+from datetime import datetime
 import sep
 
 
-def record(image):
+def record(image, path):
     """
     only works with lco shit for now
     """
@@ -12,7 +13,20 @@ def record(image):
     cat = image["CAT"]
     sci = image["SCI"]
     for source in cat.data:
-        r = db.Record(ra=source["ra"], dec=source["dec"])
-        session.add(r)
+        img = session.query(db.Image).filter(db.Image.lcoid==sci.header["TRACKNUM"]).first()
+        if not img:
+            time = datetime.strptime("{} {}".format(sci.header["DATE"],
+                               sci.header["UTSTART"]), '%Y-%m-%d %H:%M:%S.%f')
+            img = db.Image(path=path, time=time, lcoid=sci.header["TRACKNUM"])
+            session.add(img)
+        r = round(source["ra"], 3)
+        d = round(source["dec"], 3)
+        rec = session.query(db.Record).filter(db.Record.ra==r, db.Record.dec==d).first()
+        if not rec:
+            rec = db.Record(ra=r, dec=d)
+            session.add(rec)
+        s = db.Source(data=source.__repr__())
+        session.add(s)
+        rec.sources.append(s)
+        img.sources.append(s)
     session.commit()
-

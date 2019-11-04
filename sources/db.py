@@ -13,7 +13,7 @@ class Record(Base):
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     ra = Column(Float)
     dec = Column(Float)
-    sources = relationship("Source", backref="record", lazy="dynamic")
+    sources = relationship("Source", backref="record", lazy="dynamic", foreign_keys="Source.record_id")
 
     def __repr__(self):
         return "<Record {} RA:{} DEC:{}>".format(self.id, self.ra, self.dec)
@@ -36,7 +36,7 @@ class Image(Base):
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     path = Column(Text(255), unique=True)
     time = Column(Date, unique=True)
-    sources = relationship("Source", backref="image", lazy="dynamic")
+    sources = relationship("Source", backref="image", lazy="dynamic", foreign_keys="Source.image_id")
     lcoid = Column(Integer, unique=True)
 
     def __repr__(self):
@@ -44,6 +44,6 @@ class Image(Base):
 
 
 def create_session():
-    engine = create_engine(r'sqlite:///sdi.db', echo=True) #connect to database
+    engine = create_engine(r'sqlite:////seti_data/sdi.db', echo=True) #connect to database
     Base.metadata.create_all(engine) #Lets create the actual sqlite database and schema!
     return sessionmaker(bind=engine)()
