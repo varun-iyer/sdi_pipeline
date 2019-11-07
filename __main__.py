@@ -21,7 +21,7 @@ print("Finished subtract")
 im_sources = extract(residuals)
 with open("sources.txt", "w") as out:
 	for sci, sourcelist in zip(science_images, im_sources):
-		out.write("TRACKNUM {}\n".format(sci.header["TRACKNUM"]))
+		out.write("{}T{}\n".format(sci.header["DATE"], sci.header["UTSTART"]))
 		out.write("-" * 80 + "\n")
 		out.write(",".join(iter(sourcelist[0].dtype.fields)) + "\n")
 		for source in sourcelist[0]:
