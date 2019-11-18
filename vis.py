@@ -13,10 +13,10 @@ from . import align
 from .sources import collate
 
 def image(image, sources=[], num=20):
-	d = DS9()
-	d.set_pyfits(image)
-	for s in sources:
-		d.set('regions command {{circle {} {} 40 #text=""}}'.format(*s.pos))
+    d = DS9()
+    d.set_pyfits(image)
+    for s in sources:
+        d.set('regions command {{circle {} {} 40 #text=""}}'.format(*s.pos))
 
 
 def curves(sources, images, num=20, detected=[], fname="", show=False):
@@ -56,4 +56,4 @@ def curves(sources, images, num=20, detected=[], fname="", show=False):
     if fname:
         fig.savefig(fname)
     if show:
-        fig.show() 
+        fig.show()
