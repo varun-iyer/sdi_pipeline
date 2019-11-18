@@ -7,7 +7,6 @@ HISTORY
 import numpy as np
 from ..common import to_np
 
-
 INV_TYPE_ERR = """Cannot determine mean of unexpected type {}; expected Numpy Array or FITS HDU"""
 
 

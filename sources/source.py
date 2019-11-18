@@ -6,6 +6,7 @@ History:
 """
 from skimage.transform import matrix_transform
 
+
 class Source:
 
     def from_hdu(cat, sci):
@@ -60,7 +61,7 @@ class Source:
         self.x, self.y = matrix_transform([self.x, self.y], T.params)[0]
         self.x_t, self.y_t = self.x, self.y
         self.pos = [self.x, self.y]
-         
+
     def same(self, source, tol=2):
         """
         Determines if the given source is the same as this one in a different

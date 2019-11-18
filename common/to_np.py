@@ -9,7 +9,6 @@ Created 2019-09-04
 import numpy as np
 from astropy.io.fits.hdu.image import ExtensionHDU, ImageHDU, PrimaryHDU
 
-
 HDU_TYPES = (ExtensionHDU, ImageHDU, PrimaryHDU)
 
 

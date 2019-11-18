@@ -9,10 +9,11 @@ import os
 from getpass import getuser
 from subprocess import check_output
 from astropy.io import fits
+from astropy.utils.data import compute_hash
 from ..config import TMPDIR
 from ..common import HDU_TYPES
 
- 
+
 def subtract(sources, template, method="hotpants"):
     """
     Subtract takes the difference of a set of astronomical data from a template
@@ -57,7 +58,7 @@ def subtract(sources, template, method="hotpants"):
         else:
             fits.writeto(inim, data)
 
-        outim = "{}/{}_{}_subtracted_.fits".format(TMPDIR, getuser(), data.header["TRACKNUM"])
+        outim = "{}/{}_{}_subtracted_.fits".format(TMPDIR, getuser(), compute_hash(inim))
         try:
             os.remove(outim)
         except OSError:
