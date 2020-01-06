@@ -13,6 +13,8 @@ class Record(Base):
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     ra = Column(Float)
     dec = Column(Float)
+    ra_std = Column(Float)
+    dec_std = Column(Float)
     sources = relationship("Source", backref="record", lazy="dynamic", foreign_keys="Source.record_id")
 
     def __repr__(self):
@@ -36,6 +38,8 @@ class Image(Base):
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     path = Column(Text(255), unique=True)
     time = Column(DateTime, unique=True)
+    ra = Column(Float)
+    dec = Column(Float)
     sources = relationship("Source", backref="image", lazy="dynamic", foreign_keys="Source.image_id")
     hash = Column(Text(32), unique=True, index=True)
 

@@ -1,3 +1,5 @@
+from astropy.io import fits
+from astropy.coordinates import Angle
 import re
 from datetime import datetime
 from . import db
@@ -21,18 +23,20 @@ def record(image, path):
         datestr = re.search(r"\d{4}-\d{2}-\d{2}", sci.header["DATE"]).group()
         timestr = re.search(r"\d{2}:\d{2}:\d{2}\.?\d+", sci.header["UTSTART"]).group()
         dt = datetime.strptime(" ".join([datestr, timestr]), "%Y-%m-%d %H:%M:%S.%f")
-        img = db.Image(path=path, time=dt, hash=compute_hash(path))
+        img = db.Image(path=path, time=dt, hash=compute_hash(path),
+                       ra=Angle(sci.header["RA"], unit="hourangle").deg,
+                       dec=Angle(sci.header["DEC"], unit="degree").deg)
         session.add(img)
          
     for source in cat.data:
         r = round(source["ra"], 2)
         d = round(source["dec"], 2)
-        rec = session.query(db.Record).filter(db.Record.ra==r, db.Record.dec==d).first()
-        if rec is None:
-            rec = db.Record(ra=r, dec=d)
-            session.add(rec)
+        # rec = session.query(db.Record).filter(db.Record.ra==r, db.Record.dec==d).first()
+        # if rec is None:
+            # rec = db.Record(ra=r, dec=d)
+        #     session.add(rec)
         s = db.Source(data=source.__repr__())
         session.add(s)
-        rec.sources.append(s)
+        # rec.sources.append(s)
         img.sources.append(s)
     session.commit()
