@@ -1,9 +1,8 @@
 import ois
 import os
 from astropy.io import fits
-<<<<<<< HEAD
 
-def subtract(sources, template, gausslist):
+def subtract(sources, template):
     output = []
 
     if type(sources) == list:

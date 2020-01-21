@@ -3,11 +3,11 @@ from astropy.io import fits
 from astropy import wcs
 import pickle
 
-template_image = fits.open("/home/williamwang/sec25/tfn0m414-kb81-20190907-0093-e91.fits.fz")
+template_image = fits.open("/home/williamwang/Downloads/lsc0m412-kb26-20190726-0293-e91.fits.fz")
 
 w = wcs.WCS(template_image["SCI"].header)
 
-source_list = pickle.load(open("/home/williamwang/sec25/Bramich_results.pkl",'rb'))
+source_list = pickle.load(open("Bramich_subtracted_sources.pkl",'rb'))
 
 x = source_list[0][0]['x']
 y = source_list[0][0]['y']
