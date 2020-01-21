@@ -7,7 +7,7 @@ def subtract(sources, template, gausslist):
 
     if type(sources) == list:
         for element in sources:
-            diff = ois.optimal_system(image=element.data, refimage=template, method='Alard-Lupton', gausslist=gausslist)[0]
+            diff = ois.optimal_system(image=element.data, refimage=template, method='Bramich')[0]
             output.append(diff)     
             
     return output
