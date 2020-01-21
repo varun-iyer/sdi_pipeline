@@ -7,8 +7,8 @@ History:
 import os
 import sep
 from ..common import to_np
- 
- 
+
+
 def extract(residual_s, thresh=None):
     """
     Uses sep to find sources on a residual image(s)

@@ -6,7 +6,6 @@ History:
 """
 import pyvo as vo
 
- 
 service = vo.dal.SCSService("https://heasarc.gsfc.nasa.gov/cgi-bin/vo/cone/coneGet.pl?table=m31stars&")
 
 

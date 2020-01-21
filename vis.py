@@ -12,11 +12,12 @@ import matplotlib.dates as mdates
 from . import align
 from .sources import collate
 
+
 def image(image, sources=[], num=20):
-	d = DS9()
-	d.set_pyfits(image)
-	for s in sources:
-		d.set('regions command {{circle {} {} 40 #text=""}}'.format(*s.pos))
+    d = DS9()
+    d.set_pyfits(image)
+    for s in sources:
+        d.set('regions command {{circle {} {} 40 #text=""}}'.format(*s.pos))
 
 
 def curves(sources, images, num=20, detected=[], fname="", show=False):
@@ -33,27 +34,27 @@ def curves(sources, images, num=20, detected=[], fname="", show=False):
         show=False -- whether to display the plot
     """
     start = [dt.datetime.strptime(
-                " ".join((d.header["DATE"], d.header["UTSTART"])),
-                "%Y-%m-%d %H:%M:%S.%f")
-                for d in images]
+        " ".join((d.header["DATE"], d.header["UTSTART"])),
+        "%Y-%m-%d %H:%M:%S.%f")
+        for d in images]
     end = [dt.datetime.strptime(
-                " ".join((d.header["DATE"], d.header["UTSTOP"])),
-                "%Y-%m-%d %H:%M:%S.%f")
-                for d in images]
-    align.sources(sources) 
-    collated = collate(sources) 
-     
+        " ".join((d.header["DATE"], d.header["UTSTOP"])),
+        "%Y-%m-%d %H:%M:%S.%f")
+        for d in images]
+    align.sources(sources)
+    collated = collate(sources)
+
     fig = plt.figure()
     ax = fig.add_subplot(2, 1, 1)
     ax.set_yscale("log")
     for c in collated[:num]:
         # FIXME do this better
         ordered = list(zip(start, [a.scaled_peak for a in c]))
-        ordered.sort(key=lambda x:x[0])
+        ordered.sort(key=lambda x: x[0])
         ax.plot_date(*list(zip(*ordered)), fmt="o-")
     ax.set_xlabel("Start Time of Image Capture (UTC)")
     ax.set_ylabel("Peak Flux (electrons/second)")
     if fname:
         fig.savefig(fname)
     if show:
-        fig.show() 
+        fig.show()
