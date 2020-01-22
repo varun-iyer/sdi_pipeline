@@ -13,11 +13,11 @@ from . import align
 from .sources import collate
 
 
-def image(image, sources=[], num=20):
+def image(hdul, cat, num=20):
     d = DS9()
-    d.set_pyfits(image)
-    for s in sources:
-        d.set('regions command {{circle {} {} 40 #text=""}}'.format(*s.pos))
+    d.set_pyfits(hdul)
+    for c in cat:
+        d.set('regions command {{circle {} {} 40 #text=""}}'.format(c['X'], c['Y']))
 
 
 def curves(sources, images, num=20, detected=[], fname="", show=False):
