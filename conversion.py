@@ -3,7 +3,7 @@ from astropy.io import fits
 from astropy import wcs
 import pickle
 
-template_image = fits.open("/home/williamwang/Downloads/lsc0m412-kb26-20190726-0293-e91.fits.fz")
+template_image = fits.open("/home/williamwang/Downloads/lsc0m412-kb26-20190726-0290-e91.fits.fz")
 
 w = wcs.WCS(template_image["SCI"].header)
 
