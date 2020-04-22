@@ -29,13 +29,11 @@ def record(image, path):
         session.add(img)
          
     for source in cat.data:
-        r = round(source["ra"], 2)
-        d = round(source["dec"], 2)
         # rec = session.query(db.Record).filter(db.Record.ra==r, db.Record.dec==d).first()
         # if rec is None:
             # rec = db.Record(ra=r, dec=d)
         #     session.add(rec)
-        s = db.Source(data=source.__repr__())
+        s = db.Source(data=source, dtype=cat.data.dtype)
         session.add(s)
         # rec.sources.append(s)
         img.sources.append(s)

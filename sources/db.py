@@ -65,8 +65,33 @@ class Source(Base):
     ra = Column(Float)
     dec = Column(Float)
 
+    def __init__(self, data, dtype=None, kwargs={}):
+        """
+        Initializes the Source using a line in a numpy recarray
+        """
+        super(Source, self).__init__(**kwargs)
+
+        if dtype is None:
+            dtype = data.dtype
+        for idx, n in enumerate(dtype.names):
+            if n.lower() in Source.__dict__:
+                self.__dict__[n.lower()] = data[idx]
+
+ 
     def __repr__(self):
         return "<Source {} Image:{} Record:{}>".format(self.id, self.image_id, self.record_id)
+
+
+class Reference(Base):
+    __tablename__ = "Image"
+    id = Column(Integer, primary_key=True, unique=True, nullable=False)
+    ra = Column(Float)
+    dec = Column(Float)
+    source = relationship("Source", backref="reference", lazy="dynamic", foreign_keys="Source.reference_id")
+    # Willimam fill in more info
+
+    def __repr__(self):
+        return "<Image {} RA:{} Dec:{}>".format(self.id, self.ra, self.dec)
 
  
 class Image(Base):
