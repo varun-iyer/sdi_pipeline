@@ -1,4 +1,5 @@
 from astropy.io import fits
+from astropy.wcs import WCS
 from astropy.coordinates import Angle
 import re
 from datetime import datetime
@@ -23,9 +24,13 @@ def record(image, path):
         datestr = re.search(r"\d{4}-\d{2}-\d{2}", sci.header["DATE"]).group()
         timestr = re.search(r"\d{2}:\d{2}:\d{2}\.?\d+", sci.header["UTSTART"]).group()
         dt = datetime.strptime(" ".join([datestr, timestr]), "%Y-%m-%d %H:%M:%S.%f")
+        w = WCS(sci.header, image)
+        wcs_minmax = w.all_pix2world([[1, 1], sci.data.shape], 1)
         img = db.Image(path=path, time=dt, hash=compute_hash(path),
                        ra=Angle(sci.header["RA"], unit="hourangle").deg,
-                       dec=Angle(sci.header["DEC"], unit="degree").deg)
+                       dec=Angle(sci.header["DEC"], unit="degree").deg,
+                       ra_min=wcs_minmax[0][0], ra_max=wcs_minmax[1][0],
+                       dec_min=wcs_minmax[0][1], dec_max=wcs_minmax[1][1])
         session.add(img)
          
     for source in cat.data:

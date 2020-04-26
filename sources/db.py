@@ -39,7 +39,11 @@ class Image(Base):
     path = Column(Text(255), unique=True)
     time = Column(DateTime, unique=True)
     ra = Column(Float)
+    ra_max = Column(Float)
+    ra_min = Column(Float)
     dec = Column(Float)
+    dec_max = Column(Float)
+    dec_min = Column(Float)
     sources = relationship("Source", backref="image", lazy="dynamic", foreign_keys="Source.image_id")
     hash = Column(Text(32), unique=True, index=True)
 
