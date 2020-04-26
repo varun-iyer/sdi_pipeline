@@ -4,23 +4,24 @@ History:
     Created on 2019-09-06
 e       Varun Iyer <varun_iyer@ucsb.edu>
 """
+from ast import literal_eval
 from pyds9 import DS9
 import numpy as np
 import datetime as dt
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from . import align
-from .sources import collate
+from .sources import db
 
 
-def image(image, sources=[], num=20):
+def image(hdul, cat, num=20):
     d = DS9()
-    d.set_pyfits(image)
-    for s in sources:
-        d.set('regions command {{circle {} {} 40 #text=""}}'.format(*s.pos))
+    d.set_pyfits(hdul)
+    for x, y in zip(cat['x'], cat['y']):
+        d.set('regions command {{circle {} {} 40 #text=""}}'.format(x, y))
 
 
-def curves(sources, images, num=20, detected=[], fname="", show=False):
+def curves(record_s):
     """
     Generate a plot of light curves for each source
     Arguments:
@@ -33,28 +34,14 @@ def curves(sources, images, num=20, detected=[], fname="", show=False):
             specified path
         show=False -- whether to display the plot
     """
-    start = [dt.datetime.strptime(
-        " ".join((d.header["DATE"], d.header["UTSTART"])),
-        "%Y-%m-%d %H:%M:%S.%f")
-        for d in images]
-    end = [dt.datetime.strptime(
-        " ".join((d.header["DATE"], d.header["UTSTOP"])),
-        "%Y-%m-%d %H:%M:%S.%f")
-        for d in images]
-    align.sources(sources)
-    collated = collate(sources)
+    records = record_s
+    if not isinstance(record_s, list):
+        records = [record_s]
 
-    fig = plt.figure()
-    ax = fig.add_subplot(2, 1, 1)
-    ax.set_yscale("log")
-    for c in collated[:num]:
-        # FIXME do this better
-        ordered = list(zip(start, [a.scaled_peak for a in c]))
-        ordered.sort(key=lambda x: x[0])
-        ax.plot_date(*list(zip(*ordered)), fmt="o-")
-    ax.set_xlabel("Start Time of Image Capture (UTC)")
-    ax.set_ylabel("Peak Flux (electrons/second)")
-    if fname:
-        fig.savefig(fname)
-    if show:
-        fig.show()
+    for record in records:
+        sources = sorted(record.sources, key=lambda x: x.image.time)
+        times = [s.image.time for s in sources]
+        fluxes = [literal_eval(s.data)[7] for s in sources]
+        plt.plot(times, fluxes)
+    plt.gcf().autofmt_xdate()
+    plt.show()
