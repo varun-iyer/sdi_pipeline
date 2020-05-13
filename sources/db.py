@@ -110,7 +110,7 @@ class Image(Base):
         return "<Image {} Time:{} Path:{}>".format(self.id, self.time, self.path)
 
 
-def create_session():
-    engine = create_engine(r'sqlite:////seti_data/sdi.db', echo=True) #connect to database
+def create_session(db_path="/seti_data/sdi.db"):
+    engine = create_engine(r"sqlite:///{}".format(db_path), echo=True) #connect to database
     Base.metadata.create_all(engine) #Lets create the actual sqlite database and schema!
     return sessionmaker(bind=engine)()

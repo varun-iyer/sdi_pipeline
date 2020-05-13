@@ -7,13 +7,15 @@ from astropy.utils.data import compute_hash
 import sep
 
 
-def record(image, path):
+def record(image, path, db_session=None):
     """
     only works with lco shit for now
     """
     # bkg = sep.background(image.data)
     # recarray = sep.extract(image.data - bkg.back(), bkg.globalrms * 3.0)
-    session = db.create_session()
+    session = db_session
+    if session is None:
+        session = db.create_session()
     cat = image["CAT"]
     sci = image["SCI"]
      
