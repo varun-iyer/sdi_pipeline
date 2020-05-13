@@ -21,6 +21,6 @@ print("Finished subtract")
 
 im_sources = extract(residuals)
 
-pickle.dump(im_sources, open("./sdi_pipeline/Bramich_subtracted_sources.pkl","wb"))
+pickle.dump(im_sources, open("transient_candidates.pkl","wb"))
 
 print("Finished extract")
