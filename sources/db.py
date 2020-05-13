@@ -85,7 +85,7 @@ class Source(Base):
 
 
 class Reference(Base):
-    __tablename__ = "Image"
+    __tablename__ = "Reference"
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     ra = Column(Float)
     dec = Column(Float)
