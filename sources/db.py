@@ -11,10 +11,12 @@ Base = declarative_base()
 class Record(Base):
     __tablename__ = "Record"
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
-    ra = Column(Float)
-    dec = Column(Float)
+    ra_avg = Column(Float)
+    dec_avg = Column(Float)
+    flux_avg = Column(Float)
     ra_std = Column(Float)
     dec_std = Column(Float)
+    flux_std = Column(Float)
     sources = relationship("Source", backref="record", lazy="dynamic", foreign_keys="Source.record_id")
 
     def __repr__(self):
