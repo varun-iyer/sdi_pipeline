@@ -3,6 +3,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, DateTime, String, Text, Float, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, backref
+from astropy.utils.data import compute_hash
+from astropy.coordinates import Angle
+from datetime import datetime
+import re
+from astropy.io import fits
 
 
 Base = declarative_base()
@@ -11,6 +16,7 @@ Base = declarative_base()
 class Record(Base):
     __tablename__ = "Record"
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
+    label = Column(Integer, unique=True)
     ra_avg = Column(Float)
     dec_avg = Column(Float)
     flux_avg = Column(Float)
@@ -20,7 +26,7 @@ class Record(Base):
     sources = relationship("Source", backref="record", lazy="dynamic", foreign_keys="Source.record_id")
 
     def __repr__(self):
-        return "<Record {} RA:{} DEC:{}>".format(self.id, self.ra, self.dec)
+        return "<Record {} RA:{} DEC:{} FLUX:{}>".format(self.id, self.ra_avg, self.dec_avg, self.flux_avg)
 
 
 class Source(Base):
@@ -29,6 +35,7 @@ class Source(Base):
     image_id = Column(Integer, ForeignKey('Image.id'))
     time = Column(DateTime, ForeignKey('Image.time'))
     record_id = Column(Integer, ForeignKey('Record.id'))
+    reference_id = Column(Integer, ForeignKey('Reference.id'))
     x = Column(Float)
     y = Column(Float)
     xwin = Column(Float)
@@ -106,11 +113,33 @@ class Image(Base):
     sources = relationship("Source", backref="image", lazy="dynamic", foreign_keys="Source.image_id")
     hash = Column(Text(32), unique=True, index=True)
 
+    def __init__(self, image_or_path, path=None):
+        im_path = ""
+        img = image_or_path
+        if path is None:
+            im_path = image_or_path
+            img = fits.open(image_or_path)
+        else:
+            im_path = path
+
+        cat = img["CAT"]
+        sci = img["SCI"]
+        hash_ = compute_hash(im_path)
+        datestr = re.search(r"\d{4}-\d{2}-\d{2}", sci.header["DATE"]).group()
+        timestr = re.search(r"\d{2}:\d{2}:\d{2}\.?\d+", sci.header["UTSTART"]).group()
+        dt = datetime.strptime(" ".join([datestr, timestr]), "%Y-%m-%d %H:%M:%S.%f")
+
+        self.path = path
+        self.time = dt
+        self.hash = hash_
+        self.ra = Angle(sci.header["RA"], unit="hourangle").deg
+        self.dec = Angle(sci.header["DEC"], unit="degree").deg
+
     def __repr__(self):
         return "<Image {} Time:{} Path:{}>".format(self.id, self.time, self.path)
 
 
 def create_session(db_path="/seti_data/sdi.db"):
-    engine = create_engine(r"sqlite:///{}".format(db_path), echo=True) #connect to database
+    engine = create_engine(r"sqlite:///{}".format(db_path), echo=False) #connect to database
     Base.metadata.create_all(engine) #Lets create the actual sqlite database and schema!
     return sessionmaker(bind=engine)()
