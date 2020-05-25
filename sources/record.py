@@ -1,3 +1,5 @@
+import numpy as np
+from sklearn.cluster import dbscan
 from astropy.io import fits
 from astropy.coordinates import Angle
 import re
@@ -7,26 +9,24 @@ from astropy.utils.data import compute_hash
 import sep
 
 
-def record(image, path):
+def record(image, path, db_session=None):
     """
     only works with lco shit for now
     """
     # bkg = sep.background(image.data)
     # recarray = sep.extract(image.data - bkg.back(), bkg.globalrms * 3.0)
-    session = db.create_session()
+    session = db_session
+    if session is None:
+        session = db.create_session()
     cat = image["CAT"]
     sci = image["SCI"]
      
     hash_ = compute_hash(path)
     img = session.query(db.Image).filter(db.Image.hash==hash_).first()
+
     if img is None:
-        datestr = re.search(r"\d{4}-\d{2}-\d{2}", sci.header["DATE"]).group()
-        timestr = re.search(r"\d{2}:\d{2}:\d{2}\.?\d+", sci.header["UTSTART"]).group()
-        dt = datetime.strptime(" ".join([datestr, timestr]), "%Y-%m-%d %H:%M:%S.%f")
-        img = db.Image(path=path, time=dt, hash=compute_hash(path),
-                       ra=Angle(sci.header["RA"], unit="hourangle").deg,
-                       dec=Angle(sci.header["DEC"], unit="degree").deg)
-        session.add(img)
+        print(path)
+        img = db.Image(image, path)
          
     for source in cat.data:
         # rec = session.query(db.Record).filter(db.Record.ra==r, db.Record.dec==d).first()
@@ -37,4 +37,29 @@ def record(image, path):
         session.add(s)
         # rec.sources.append(s)
         img.sources.append(s)
+    session.commit()
+
+def _norm(array):
+    array -= min(array)
+    array *= 1/max(array)
+    return array
+
+def cluster(db_session=None):
+    session = db_session
+    if session is None:
+        session = db.create_session()
+    irdf = np.array(session.query(db.Source.id,db.Source.ra,db.Source.dec,db.Source.flux).all()).T
+    # do the norming with numpy
+    irdf = np.vstack((irdf[0],_norm(irdf[1]), _norm(irdf[2]), _norm(irdf[3])))
+    cores, labels = dbscan((irdf[1:]).T, 0.001, 4)
+    labels += 1 # no -1 label
+    print(irdf[0].shape)
+    print(labels.shape)
+    for id_, ell in zip(irdf[0], labels):
+        print(ell)
+        rec = session.query(db.Record).filter(db.Record.label==ell).first()
+        if not rec:
+            rec = db.Record(label=ell, ra_avg=0, dec_avg=0, flux_avg=0, ra_std=0, dec_std=0, flux_std=0)
+        rec.sources.append(session.query(db.Source).get(id_))
+        session.add(rec)
     session.commit()
