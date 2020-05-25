@@ -27,6 +27,8 @@ class Source(Base):
     image_id = Column(Integer, ForeignKey('Image.id'))
     time = Column(DateTime, ForeignKey('Image.time'))
     record_id = Column(Integer, ForeignKey('Record.id'))
+    reference_id = Column(Integer, ForeignKey('Reference.id'))
+    template_id = Column(Integer, ForeignKey('Template.id'))
     x = Column(Float)
     y = Column(Float)
     xwin = Column(Float)
@@ -81,19 +83,48 @@ class Source(Base):
     def __repr__(self):
         return "<Source {} Image:{} Record:{}>".format(self.id, self.image_id, self.record_id)
 
+class Transient(Base):
+    __tablename__ = "Transient"
+    id = Column(Integer, primary_key=True, unique=True, nullable=False)
+    image_id = Column(Integer, ForeignKey('Image.id'))
+    reference_id = Column(Integer, ForeignKey('Reference.id'))
+    template_id = Column(Integer, ForeignKey('Template.id'))
+    thresh = Column(Float)
+    ra = Column(Float)
+    dec = Column(Float)
+    def __repr__(self):
+        return "<Transient {} RA:{} DEC:{}>".format(self.id, self.ra, self.dec)
+
+
+class Template(Base):
+    __tablename__ = "Template"
+    id = Column(Integer, primary_key=True, unique=True, nullable=False)
+    path = Column(Text(255), unique=True)
+    section_id = Column(Text(255))
+    sources = relationship("Source", backref="template", lazy="dynamic", foreign_keys="Source.template_id")
+    transients = relationship("Transient", backref="template", lazy="dynamic", foreign_keys="Transient.template_id") 
+  
+    def __repr__(self):
+        return "<Template {} Section:{} Path:{}>".format(self.section_id, self.path)
+
 
 class Reference(Base):
-    __tablename__ = "Image"
+    __tablename__ = "Reference"
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     ra = Column(Float)
     dec = Column(Float)
-    source = relationship("Source", backref="reference", lazy="dynamic", foreign_keys="Source.reference_id")
-    # Willimam fill in more info
-
+    name = Column(Text(255))
+    lii = Column(Float)
+    bii = Column(Float)
+    appmag = Column(Float)
+    appmag_error = Column(Float)
+    type_appmag = Column(Text(255))
+    orig_file = Column(Text(255)) 
+    sources = relationship("Source", backref="reference", lazy="dynamic", foreign_keys="Source.reference_id")
+    transients = relationship("Transient", backref="reference", lazy="dynamic", foreign_keys="Transient.reference_id")
     def __repr__(self):
-        return "<Image {} RA:{} Dec:{}>".format(self.id, self.ra, self.dec)
+        return "<Reference {} RA:{} Dec:{}>".format(self.id, self.ra, self.dec)
 
- 
 class Image(Base):
     __tablename__ = "Image"
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
@@ -102,6 +133,8 @@ class Image(Base):
     ra = Column(Float)
     dec = Column(Float)
     sources = relationship("Source", backref="image", lazy="dynamic", foreign_keys="Source.image_id")
+    section_id = Column(Text(255))
+    transients = relationship("Transient", backref="Image", lazy="dynamic", foreign_keys="Transient.image_id")
     hash = Column(Text(32), unique=True, index=True)
 
     def __repr__(self):
