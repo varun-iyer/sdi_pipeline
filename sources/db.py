@@ -129,7 +129,7 @@ class Image(Base):
         timestr = re.search(r"\d{2}:\d{2}:\d{2}\.?\d+", sci.header["UTSTART"]).group()
         dt = datetime.strptime(" ".join([datestr, timestr]), "%Y-%m-%d %H:%M:%S.%f")
 
-        self.path = path
+        self.path = im_path
         self.time = dt
         self.hash = hash_
         self.ra = Angle(sci.header["RA"], unit="hourangle").deg
