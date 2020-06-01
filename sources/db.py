@@ -7,8 +7,7 @@ from astropy.utils.data import compute_hash
 from astropy.coordinates import Angle
 from datetime import datetime
 import re
-from astropy.io import fits
-
+import numpy as np
 
 Base = declarative_base()
 
@@ -100,6 +99,12 @@ class Transient(Base):
     thresh = Column(Float)
     ra = Column(Float)
     dec = Column(Float)
+    def __init__(self, data, w):
+        pixarray = np.array([[data['x'],data['y']]])
+        radec = w.wcs_pix2world(pixarray,0)
+        self.ra = radec[0][0]
+        self.dec = radec[0][1]
+        self.thresh = data['thresh']
     def __repr__(self):
         return "<Transient {} RA:{} DEC:{}>".format(self.id, self.ra, self.dec)
 
@@ -111,9 +116,13 @@ class Template(Base):
     section_id = Column(Text(255))
     sources = relationship("Source", backref="template", lazy="dynamic", foreign_keys="Source.template_id")
     transients = relationship("Transient", backref="template", lazy="dynamic", foreign_keys="Transient.template_id") 
-  
+    def __init__(self, path, secid):
+	
+        self.path = path
+        self.section_id = secid
+	 
     def __repr__(self):
-        return "<Template {} Section:{} Path:{}>".format(self.section_id, self.path)
+        return "<Template {} Section:{} Path:{}>".format(self.id, self.section_id, self.path)
 
 
 class Reference(Base):
@@ -130,6 +139,15 @@ class Reference(Base):
     orig_file = Column(Text(255)) 
     sources = relationship("Source", backref="reference", lazy="dynamic", foreign_keys="Source.reference_id")
     transients = relationship("Transient", backref="reference", lazy="dynamic", foreign_keys="Transient.reference_id")
+    def __init__(self, ref):
+        self.ra = ref['ra'][0]
+        self.dec = ref['dec'][0]
+        self.name = ref['name'][0]
+        self.lii = ref['lii'][0]
+        self.bii = ref['bii'][0]
+        self.appmag = ref['appmag'][0]
+        self.appmag_error = ref['appmag_error'][0]
+        self.orig_file = ref['orig_file'][0]
     def __repr__(self):
         return "<Reference {} RA:{} Dec:{}>".format(self.id, self.ra, self.dec)
 
@@ -145,7 +163,7 @@ class Image(Base):
     transients = relationship("Transient", backref="Image", lazy="dynamic", foreign_keys="Transient.image_id")
     hash = Column(Text(32), unique=True, index=True)
 
-    def __init__(self, image_or_path, path=None):
+    def __init__(self, image_or_path, secid, path=None):
         im_path = ""
         img = image_or_path
         if path is None:
@@ -166,7 +184,7 @@ class Image(Base):
         self.hash = hash_
         self.ra = Angle(sci.header["RA"], unit="hourangle").deg
         self.dec = Angle(sci.header["DEC"], unit="degree").deg
-
+        self.section_id = secid
     def __repr__(self):
         return "<Image {} Time:{} Path:{}>".format(self.id, self.time, self.path)
 

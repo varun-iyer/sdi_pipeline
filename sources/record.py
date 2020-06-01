@@ -7,37 +7,61 @@ from datetime import datetime
 from . import db
 from astropy.utils.data import compute_hash
 import sep
-
-
-def record(image, path, db_session=None):
-    """
-    only works with lco shit for now
-    """
-    # bkg = sep.background(image.data)
-    # recarray = sep.extract(image.data - bkg.back(), bkg.globalrms * 3.0)
-    session = db_session
-    if session is None:
-        session = db.create_session()
-    cat = image["CAT"]
-    sci = image["SCI"]
+from astropy import wcs
+from sdi.sources.reference import reference
+import pyvo as vo
+def record(image, path, secid, residual_data, temp, db_session=None):
+	"""
+	only works with lco shit for now
+	"""
+	# bkg = sep.background(image.data)
+	# recarray = sep.extract(image.data - bkg.back(), bkg.globalrms * 3.0)
+	session = db_session
+	if session is None:
+		session = db.create_session("/seti_data/sdi.williamtest.db")
+    
+	cat = image["CAT"]
+	sci = image["SCI"]
      
-    hash_ = compute_hash(path)
-    img = session.query(db.Image).filter(db.Image.hash==hash_).first()
+	hash_ = compute_hash(path)
+	img = session.query(db.Image).filter(db.Image.hash==hash_).first()
 
-    if img is None:
-        print(path)
-        img = db.Image(image, path)
-         
-    for source in cat.data:
-        # rec = session.query(db.Record).filter(db.Record.ra==r, db.Record.dec==d).first()
-        # if rec is None:
-            # rec = db.Record(ra=r, dec=d)
-        #     session.add(rec)
-        s = db.Source(data=source, dtype=cat.data.dtype)
-        session.add(s)
-        # rec.sources.append(s)
-        img.sources.append(s)
-    session.commit()
+	if img is None:
+		print(path)
+		img = db.Image(image, secid, path)
+	
+	service = vo.dal.SCSService("https://heasarc.gsfc.nasa.gov/cgi-bin/vo/cone/coneGet.pl?table=m31stars&") 
+	w = wcs.WCS(sci.header)
+	for element in residual_data:
+		trans = db.Transient(data=element, w=w)
+		session.add(trans)
+		img.transients.append(trans)
+		temp.transients.append(trans)
+		pixarray = np.array([[element['x'], element['y']]])
+		radec = w.wcs_pix2world(pixarray,0)
+		result = service.search((radec[0][0], radec[0][1]), 0.001)
+		if (result):
+			ref = db.Reference(result)
+			session.add(ref)
+			ref.transients.append(trans)
+			
+	for source in cat.data:
+		# rec = session.query(db.Record).filter(db.Record.ra==r, db.Record.dec==d).first()
+		# if rec is None:
+			# rec = db.Record(ra=r, dec=d)
+	#     session.add(rec)
+		s = db.Source(data=source, dtype=cat.data.dtype)
+		session.add(s)
+		# rec.sources.append(s)
+		img.sources.append(s)
+		temp.sources.append(s)
+		result = reference(source)
+		if(result):
+			ref = db.Reference(result[0][1])
+			session.add(ref)
+			ref.sources.append(s)
+    
+	session.commit()
 
 def _norm(array):
     array -= min(array)
