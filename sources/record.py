@@ -45,7 +45,7 @@ def record(image, path, secid, residual_data, temp, db_session=None):
 			session.add(ref)
 			ref.transients.append(trans)
 			
-	for source in cat.data:
+	"""for source in cat.data:
 		# rec = session.query(db.Record).filter(db.Record.ra==r, db.Record.dec==d).first()
 		# if rec is None:
 			# rec = db.Record(ra=r, dec=d)
@@ -60,7 +60,7 @@ def record(image, path, secid, residual_data, temp, db_session=None):
 			ref = db.Reference(result[0][1])
 			session.add(ref)
 			ref.sources.append(s)
-    
+        """
 	session.commit()
 
 def _norm(array):
