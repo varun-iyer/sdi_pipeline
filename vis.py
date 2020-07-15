@@ -1,60 +1,31 @@
-"""
-light_curves finds the intensity of a list of sources over time
-History:
-    Created on 2019-09-06
-e       Varun Iyer <varun_iyer@ucsb.edu>
-"""
 from pyds9 import DS9
 import numpy as np
-import datetime as dt
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from . import align
-from .sources import collate
 
-
-def image(hdul, cat, num=20):
+#hduls should be a list of hdul(s), cat should be a string containing the path to a .npy file
+#Adding circles via the image() function will apply circles to all images
+def image(hduls, cat=None, color='green', size=40):
     d = DS9()
-    d.set_pyfits(hdul)
-    for c in cat:
-        d.set('regions command {{circle {} {} 40 #text=""}}'.format(c['X'], c['Y']))
+    d.set("scale mode zscale")
 
+    if cat == None:
+        for hdul in hduls:
+            d.set("frame new")
+            d.set_pyfits(hdul)
+            d.set("zoom to fit")
+    else:
+        for hdul in hduls:
+            d.set("frame new")
+            d.set_pyfits(hdul)
+            d.set("zoom to fit")
+            coords = np.load(cat)
+            for coord in coords:
+                d.set('regions command {{circle {} {} {} #color={}}}'.format(coord[0], coord[1], size, color))
+    d.set("frame first")
+    d.set("frame delete")
 
-def curves(sources, images, num=20, detected=[], fname="", show=False):
-    """
-    Generate a plot of light curves for each source
-    Arguments:
-        sources -- list of catalog file HDUs
-        images -- list of science images
-    Keyword Arguments:
-        num=100 -- how many of the curves to graph
-        detected=100 -- list of sources to graph in a different color as detected
-        fname="" -- path to save the image; if not "", the image is saved to the
-            specified path
-        show=False -- whether to display the plot
-    """
-    start = [dt.datetime.strptime(
-        " ".join((d.header["DATE"], d.header["UTSTART"])),
-        "%Y-%m-%d %H:%M:%S.%f")
-        for d in images]
-    end = [dt.datetime.strptime(
-        " ".join((d.header["DATE"], d.header["UTSTOP"])),
-        "%Y-%m-%d %H:%M:%S.%f")
-        for d in images]
-    align.sources(sources)
-    collated = collate(sources)
-
-    fig = plt.figure()
-    ax = fig.add_subplot(2, 1, 1)
-    ax.set_yscale("log")
-    for c in collated[:num]:
-        # FIXME do this better
-        ordered = list(zip(start, [a.scaled_peak for a in c]))
-        ordered.sort(key=lambda x: x[0])
-        ax.plot_date(*list(zip(*ordered)), fmt="o-")
-    ax.set_xlabel("Start Time of Image Capture (UTC)")
-    ax.set_ylabel("Peak Flux (electrons/second)")
-    if fname:
-        fig.savefig(fname)
-    if show:
-        fig.show()
+#Use this function to add circles to the currently selected image in DS9
+def circle(cat, color='green', size=40):
+    coords = np.load(cat)
+    d = DS9()
+    for coord in coords:
+        d.set('regions command {{circle {} {} {} #color={}}}'.format(coord[0], coord[1], size, color))
