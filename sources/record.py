@@ -10,6 +10,7 @@ import sep
 from astropy import wcs
 from sdi.sources.reference import reference
 import pyvo as vo
+from scipy.optimize import curve_fit
 def record(image, path, secid, residual_data, temp, db_session=None):
 	"""
 	only works with lco shit for now
@@ -44,7 +45,9 @@ def record(image, path, secid, residual_data, temp, db_session=None):
 			ref = db.Reference(result)
 			session.add(ref)
 			ref.transients.append(trans)
-			
+	appmags = []
+	fluxes = []
+	source_list = []		
 	for source in cat.data:
 		# rec = session.query(db.Record).filter(db.Record.ra==r, db.Record.dec==d).first()
 		# if rec is None:
@@ -60,30 +63,40 @@ def record(image, path, secid, residual_data, temp, db_session=None):
 			ref = db.Reference(result[0][1])
 			session.add(ref)
 			ref.sources.append(s)
-
+			appmags.append(result[0][1]['appmag'][0])
+			fluxes.append(source[6])
+		source_list.append(s)
+	coeff, pcov = curve_fit(normalize, fluxes, appmags)
+	img.coeff_a = coeff[0]
+	img.coeff_b = coeff[1]
+	for elem in source_list:
+		elem.appmag = coeff[0]*np.log(elem.flux) + coeff[1]
+	
 	session.commit()
 
 def _norm(array):
-    array -= min(array)
-    array *= 1/max(array)
-    return array
+	array -= min(array)
+	array *= 1/max(array)
+	return array
 
 def cluster(db_session=None):
-    session = db_session
-    if session is None:
-        session = db.create_session()
-    irdf = np.array(session.query(db.Source.id,db.Source.ra,db.Source.dec,db.Source.flux).all()).T
-    # do the norming with numpy
-    irdf = np.vstack((irdf[0],_norm(irdf[1]), _norm(irdf[2]), _norm(irdf[3])))
-    cores, labels = dbscan((irdf[1:]).T, 0.001, 4)
-    labels += 1 # no -1 label
-    print(irdf[0].shape)
-    print(labels.shape)
-    for id_, ell in zip(irdf[0], labels):
-        print(ell)
-        rec = session.query(db.Record).filter(db.Record.label==ell).first()
-        if not rec:
-            rec = db.Record(label=ell, ra_avg=0, dec_avg=0, flux_avg=0, ra_std=0, dec_std=0, flux_std=0)
-        rec.sources.append(session.query(db.Source).get(id_))
-        session.add(rec)
-    session.commit()
+	session = db_session
+	if session is None:
+		session = db.create_session()
+	irdf = np.array(session.query(db.Source.id,db.Source.ra,db.Source.dec,db.Source.flux).all()).T
+	# do the norming with numpy
+	irdf = np.vstack((irdf[0],_norm(irdf[1]), _norm(irdf[2]), _norm(irdf[3])))
+	cores, labels = dbscan((irdf[1:]).T, 0.001, 4)
+	labels += 1 # no -1 label
+	print(irdf[0].shape)
+	print(labels.shape)
+	for id_, ell in zip(irdf[0], labels):
+		print(ell)
+		rec = session.query(db.Record).filter(db.Record.label==ell).first()
+		if not rec:
+			rec = db.Record(label=ell, ra_avg=0, dec_avg=0, flux_avg=0, ra_std=0, dec_std=0, flux_std=0)
+		rec.sources.append(session.query(db.Source).get(id_))
+		session.add(rec)
+	session.commit()
+def normalize(x, a, b):
+	return a*np.log(x) + b

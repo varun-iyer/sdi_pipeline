@@ -73,6 +73,7 @@ class Source(Base):
     flag = Column(Float)
     ra = Column(Float)
     dec = Column(Float)
+    appmag = Column(Float)
 
     def __init__(self, data, dtype=None, kwargs={}):
         """
@@ -158,6 +159,8 @@ class Image(Base):
     time = Column(DateTime, unique=True)
     ra = Column(Float)
     dec = Column(Float)
+    coeff_a = Column(Float)
+    coeff_b = Column(Float)
     sources = relationship("Source", backref="image", lazy="dynamic", foreign_keys="Source.image_id")
     section_id = Column(Text(255))
     transients = relationship("Transient", backref="Image", lazy="dynamic", foreign_keys="Transient.image_id")
