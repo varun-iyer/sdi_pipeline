@@ -71,7 +71,7 @@ def record(image, path, secid, residual_data, temp, db_session=None):
 	img.coeff_b = coeff[1]
 	for elem in source_list:
 		elem.appmag = coeff[0]*np.log(elem.flux) + coeff[1]
-	
+        	
 	session.commit()
 
 def _norm(array):
@@ -97,6 +97,19 @@ def cluster(db_session=None):
 			rec = db.Record(label=ell, ra_avg=0, dec_avg=0, flux_avg=0, ra_std=0, dec_std=0, flux_std=0)
 		rec.sources.append(session.query(db.Source).get(id_))
 		session.add(rec)
+	records = session.query(db.Record).all()
+	for elem in records:
+		sources = elem.sources.all()
+		sum_ra = 0
+		sum_dec = 0
+		sum_flux = 0
+		for item in sources:
+			sum_ra += item.ra
+			sum_dec += item.dec
+			sum_flux += item.flux
+		elem.ra_avg = sum_ra/len(sources)
+		elem.dec_avg = sum_dec/len(sources)
+		elem.flux_avg = sum_flux/len(sources)
 	session.commit()
 def normalize(x, a, b):
 	return a*np.log(x) + b
