@@ -65,6 +65,7 @@ def image(source_s, reference=None, method="astroalign"):
 
     if reference is None:
         reference = ref_image(sources)
+    print(reference.header["ORIGNAME"])
     np_ref = to_np(reference, "Cannot align to unexpected type {}; expected numpy array or FITS HDU")
 
     for source in sources:

@@ -9,31 +9,34 @@ import pyvo as vo
 service = vo.dal.SCSService("https://heasarc.gsfc.nasa.gov/cgi-bin/vo/cone/coneGet.pl?table=m31stars&")
 
 
-def reference(catalogs, thresh=0.001):
-    """
-    Reference searches the database to see if sources in the given catalog(s)
-    can be used as known reference stars
-    Arguments:
-        catalogs -- An HDU BinTable catalog or list of them provided by the LCO
-    Keyword Arguments:
-        thresh=0.001 -- how tight the search cone should be in degrees, .001 is
-            the number of sigfigs we get from wcs proj. compared to ra/dec
-    Returns:
-        A list of tuples; each tuple is a catalog and an SCSResults object
-        representing possible matches        
-    """
-    cats = []
-    if isinstance(catalogs, list):
-        cats = catalogs
-    else:
-        cats.append(catalogs)
+def reference(source, thresh=0.001):
+	"""
+	Reference searches the database to see if sources in the given catalog(s)
+	can be used as known reference stars
+	Arguments: 
+		source -- source in cat.data
+	Keyword Arguments:
+		thresh=0.001 -- how tight the search cone should be in degrees, .001 is
+		the number of sigfigs we get from wcs proj. compared to ra/dec
+	Returns:
+		A list of tuples; each tuple is a catalog and an SCSResults object
+		representing possible matches        
+   
+	cats = []
 
-    matches = []
-    for cat in cats:
-        for source in cat.data:
-            # FIXME we should run one query and then do our own collisions
-            # repeated querying is very, very slow
-            references = service.search((source["ra"], source["dec"]), thresh)
-            if len(references) > 0:
-                matches.append((source, references))
-    return matches
+	if isinstance(catalogs, list):
+		cats = catalogs
+	else:
+		cats.append(catalogs)
+
+	matches = []
+	for cat in cats:
+		for source in cat.data:
+		# FIXME we should run one query and then do our own collisions
+		# repeated querying is very, very slow
+	"""
+	matches = []         
+	references = service.search((source["ra"], source["dec"]), thresh)
+	if len(references) > 0:
+		matches.append((source, references))
+	return matches

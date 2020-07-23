@@ -18,12 +18,9 @@ template = combine(aligned)
 print("Finished combine")
 residuals = subtract(aligned, template)
 print("Finished subtract")
+
 im_sources = extract(residuals)
-with open("sources.txt", "w") as out:
-    for sci, sourcelist in zip(science_images, im_sources):
-        out.write("{}T{}\n".format(sci.header["DATE"], sci.header["UTSTART"]))
-        out.write("-" * 80 + "\n")
-        out.write(",".join(iter(sourcelist[0].dtype.fields)) + "\n")
-        for source in sourcelist[0]:
-            out.write(",".join([str(s) for s in iter(source)]) + "\n")
+
+pickle.dump(im_sources, open("transient_candidates.pkl","wb"))
+
 print("Finished extract")
