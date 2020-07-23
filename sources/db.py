@@ -162,8 +162,6 @@ class Image(Base):
     ra_min = Column(Float)
     dec = Column(Float)
 <<<<<<< HEAD
-    dec_max = Column(Float)
-    dec_min = Column(Float)
 =======
     coeff_a = Column(Float)
     coeff_b = Column(Float)
