@@ -75,8 +75,6 @@ def record(image, path, secid, residual_data, temp, db_session=None):
         	
 	session.commit()
 
-<<<<<<< HEAD
-=======
 def _norm(array):
 	array -= min(array)
 	array *= 1/max(array)
@@ -116,4 +114,4 @@ def cluster(db_session=None):
 	session.commit()
 def normalize(x, a, b):
 	return a*np.log(x) + b
->>>>>>> 6985d27df6e54d27433a52aaf31d28524d70abf4
+
