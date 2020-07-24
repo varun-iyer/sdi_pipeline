@@ -161,11 +161,8 @@ class Image(Base):
     ra_max = Column(Float)
     ra_min = Column(Float)
     dec = Column(Float)
-<<<<<<< HEAD
-=======
-    coeff_a = Column(Float)
-    coeff_b = Column(Float)
->>>>>>> 6985d27df6e54d27433a52aaf31d28524d70abf4
+    #coeff_a = Column(Float)
+    #coeff_b = Column(Float)
     sources = relationship("Source", backref="image", lazy="dynamic", foreign_keys="Source.image_id")
     section_id = Column(Text(255))
     transients = relationship("Transient", backref="Image", lazy="dynamic", foreign_keys="Transient.image_id")
