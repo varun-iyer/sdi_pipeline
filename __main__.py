@@ -18,7 +18,7 @@ save_file = ("{spath}residual{index}{original}")
 def run(s, path, save_path):
     if s: 
         print("residuals will be saved")
-        save_base = os.path.basename(glob("{}*.fz".format(path))[0]))
+        save_base = os.path.basename(glob("{}*.fz".format(path))[0])
         for image in glob("{}*.fz".format(path)):
             file_list.append(image)
             save = True
@@ -37,7 +37,7 @@ def run(s, path, save_path):
         print("Saving Residuals")
         ri = [r[0] for r in residuals]
         for count, p in enumerate(ri):
-            fits.PrimaryHDU(p).writeto(save_file.format(spath = list(save_path)[0], index = count, original = save_base)
+            fits.PrimaryHDU(p).writeto(save_file.format(spath = list(save_path)[0], index = count, original = save_base))
     im_sources = extract([res[0] for res in residuals])
     print("Finished extract")
     pickle.dump(im_sources, open("transient_candidates.pkl","wb"))
