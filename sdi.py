@@ -4,7 +4,9 @@ import inspect
 
 @click.group(chain=True)
 def cli():
-    pass
+    """
+    asdfkajsdfh
+    """
 
 @cli.resultcallback()
 def run_pipeline(operators):
@@ -30,13 +32,12 @@ def operator(func):
     into run_pipeline.
     """
     def new_func(*args, **kwargs):
-        print("clicky clicky")
         def operator(hduls):
             # args and kwargs are subcommand-specific
             return func(hduls, *args, **kwargs)
+        return operator
 
     # basically return new_func, but better
-    print(new_func)
     return update_wrapper(new_func, func)
 
 def generator(func):
@@ -49,20 +50,12 @@ def generator(func):
     def new_func(hduls, *args, **kwargs):
         yield from hduls
         yield from func(*args, **kwargs)
-
     return update_wrapper(new_func, func)
 
 @cli.command("start")
-@click.option(
-    "-i",
-    "--image",
-    "images",
-    type=click.Path(),
-    multiple=True,
-    help="The image file to open.",
-)
 @generator
 def start():
+    print("start")
     return "begin"
 
 @cli.command("hello")
