@@ -1,11 +1,11 @@
 from functools import update_wrapper
 import click
-import inspect
+from inspect import signature, _empty
 
 @click.group(chain=True)
 def cli():
     """
-    asdfkajsdfh
+    The overall chaned click group
     """
 
 @cli.resultcallback()
@@ -15,10 +15,8 @@ def run_pipeline(operators):
     """
     # a list of fitsfiles passed through the whole pipeline
     hduls = ()
-    print(operators)
     for operator in operators:
         hduls = operator(hduls)
-        print(hduls)
 
     for _ in hduls:
         # do necessary things on overall outputs
@@ -31,6 +29,7 @@ def operator(func):
     All of the returned functions are passed as an iterable
     into run_pipeline.
     """
+    @cli.command(func.__name__)
     def new_func(*args, **kwargs):
         def operator(hduls):
             # args and kwargs are subcommand-specific
@@ -46,24 +45,7 @@ def generator(func):
     opening the hduls.
     Works with sub-funcs that do not have 'hduls' as the first argument.
     """
-    @operator
     def new_func(hduls, *args, **kwargs):
         yield from hduls
         yield from func(*args, **kwargs)
-    return update_wrapper(new_func, func)
-
-@cli.command("start")
-@generator
-def start():
-    print("start")
-    return "begin"
-
-@cli.command("hello")
-@operator
-def hello(hduls):
-    return "hello"
-
-@cli.command("goodbye")
-@operator
-def hello(hduls):
-    return "goodbye"
+    return operator(update_wrapper(new_func, func))
