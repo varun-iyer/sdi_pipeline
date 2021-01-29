@@ -1,13 +1,13 @@
 from setuptools import setup
 
 setup(
-    name="sdi-test-imagepipe",
-    version="1.0",
-    py_modules=["sdi"],
+    name="sdi",
+    version="0.90",
+    py_modules=["sdi", "openfits", "__main__"],
     include_package_data=True,
     install_requires=["click"],
     entry_points="""
         [console_scripts]
-        sdi=sdi:cli
+        sdi=__main__:cli
     """,
 )

@@ -5,7 +5,7 @@ from inspect import signature, _empty
 @click.group(chain=True)
 def cli():
     """
-    The overall chaned click group
+    Chains together pipeline commands.
     """
 
 @cli.resultcallback()
@@ -29,7 +29,6 @@ def operator(func):
     All of the returned functions are passed as an iterable
     into run_pipeline.
     """
-    @cli.command(func.__name__)
     def new_func(*args, **kwargs):
         def operator(hduls):
             # args and kwargs are subcommand-specific
