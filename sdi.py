@@ -49,4 +49,4 @@ def generator(func):
         yield from func(*args, **kwargs)
     return operator(update_wrapper(new_func, func))
 
-import openfits
+import fitsio
