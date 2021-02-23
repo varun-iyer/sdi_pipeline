@@ -50,3 +50,5 @@ def generator(func):
     return operator(update_wrapper(new_func, func))
 
 import fitsio
+from commands import align, combine, subtract, snr_function, display
+
