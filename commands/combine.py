@@ -11,29 +11,28 @@ from common import to_np
 from astropy.io import fits
 
 @sdi.cli.command("combine")
+@click.option("-n", "--name", default="SCI")
 @sdi.operator
-def combine(hduls, method="numpy"):
+# TODO add option to pick out a specific table instead of just science
+def combine(hduls, name="SCI"):
     """
-    Combine merges a set of astronomical data from a template
-    Arguments:
-        hduls --list of fits hdul's
-    Keyword Arguments:
-        method -- the comination algorithm to use, currently only "numpy" 
-        is implemented and it is the default
+    Combine takes a pixel-by-pixel median of a set of astronomical data to
+    create a template image.
+    Combine is a reduction. This means that the stream will be truncated and it
+    will return just one image.
+
+    \b
+    :param hduls: list of fits hdul's
+    :param name: the name of the HDU to sum among the HDULS
+    :returns: a list with a single hdul representing the median image.
     """
     hduls_list = [hdul for hdul in hduls]
-    hdu = [hdul["SCI"] for hdul in hduls_list]
-#    if isinstance(hduls, list):
-#        hdu = hduls
-#    else:
-#        hdu.append(hduls)
-
-    if method != "numpy":
-        # TODO see below
-        raise NotImplementedError("""Combine method other than numpy (swarp) 
-        is unimplemented.""")
-    data = [to_np(i) for i in hdu]
+    try:
+        data = [hdul[name].data for hdul in hduls_list]
+    except KeyError as ke:
+        hduls_list[0].info()
+        raise KeyError(str(f"Name {name} not found in HDUList! Try running again with `combine -n [name]` from above")) from None
     comb = np.median(data, axis=0)
     hdu = fits.PrimaryHDU(comb)
     hduls_list += [fits.HDUList([hdu])]
-    return (hdul for hdul in hduls_list)
+    return [fits.HDUList([hdu])]
