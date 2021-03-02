@@ -18,7 +18,7 @@ def subtract(hduls):
     output = []
     outputs = []
     template = to_np(hduls_list[-1][0])
-    for hdu in hduls[:-1]:
+    for hdu in hduls_list[:-1]:
         diff = ois.optimal_system(image=hdu["SCI"].data, refimage=template, method='Bramich')
         output.append(diff)     
 
