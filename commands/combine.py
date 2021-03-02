@@ -11,7 +11,7 @@ from common import to_np
 from astropy.io import fits
 
 @sdi.cli.command("combine")
-@click.option("-n", "--name", default="SCI")
+@click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
 @sdi.operator
 # TODO add option to pick out a specific table instead of just science
 def combine(hduls, name="SCI"):

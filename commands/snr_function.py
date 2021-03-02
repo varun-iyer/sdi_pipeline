@@ -15,11 +15,12 @@ import sdi
 import click
 
 @sdi.cli.command("snr")
+@click.option("-n", "--name", default="SCI", help="The HDU to calculate for")
 @sdi.operator
-def snr(hduls):
+def snr(hduls, name="SCI"):
 
 	for hdul in hduls:
-		data = hdul["SCI"].data
+		data = hdul[name].data
 
 		# identify background rms
 		boxsize=(shape)

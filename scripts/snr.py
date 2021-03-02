@@ -13,11 +13,11 @@ import sys as sys
 from photutils import Background2D, DAOStarFinder, detect_threshold, detect_sources, source_properties
 import matplotlib.pyplot as plt
 
-def snr(hduls):
+def snr(hduls, name="SCI"):
 	best = hduls[0]
 	best_snr = 0
 	for hdul in hduls:
-		data = hdul["SCI"].data
+		data = hdul[name].data
 		shape = data.shape
 		# identify background rms
 		boxsize=(shape)
@@ -44,10 +44,5 @@ def snr(hduls):
 		if SNR > best_snr:
 			best = hdul
 			best_snr = SNR
-		hdul["CAT"].header.append(('SNR',SNR,"signal to noise ratio" ))
-
-
+		hdul[name].header.append(('SNR',SNR,"signal to noise ratio" ))
 	return best
-
-
-
