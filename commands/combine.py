@@ -7,7 +7,6 @@ History:
 import click
 import sdi
 import numpy as np
-from common import to_np
 from astropy.io import fits
 
 @sdi.cli.command("combine")
