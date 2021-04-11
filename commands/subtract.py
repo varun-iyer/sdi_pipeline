@@ -1,28 +1,33 @@
-import sdi
+import os
 import click
 import ois
-import os
 from astropy.io import fits
 from common import to_np
+import sdi
+from .combine import combine
 
 @sdi.cli.command("subtract")
+@click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
 @sdi.operator
-def subtract(hduls):
+def subtract(hduls, name="SCI"):
     """
     Returns differences of a set of images from a template image
     Arguments:
-        hduls --list of fits hdul's where the last image is the template 
+        hduls -- list of fits hdul's where the last image is the template 
+        name -- name of the HDU to use
         image that the other images will be subtracted from
     """
-    hduls_list = [hdul for hdul in hduls]
+    hduls = [h for h in hduls]
     output = []
     outputs = []
-    template = to_np(hduls_list[-1][0])
-    for hdu in hduls_list[:-1]:
-        diff = ois.optimal_system(image=hdu["SCI"].data, refimage=template, method='Bramich')
+    template = combine(hduls, name)["PRIMARY"].data
+    for hdu in hduls:
+        diff = ois.optimal_system(image=hdu[name].data, refimage=template, method='Bramich')[0]
         output.append(diff)     
 
+    breakpoint()
     for array_set in output:
+        # FIXME this is ragingly wrong, multiple items should be associated
         for item in array_set:
             hdu = fits.PrimaryHDU(item)
             outputs.append(fits.HDUList([hdu])) 
