@@ -4,10 +4,13 @@ from astropy.io import fits
 import glob
 
 @sdi.cli.command("read")
-@click.option('-d', '--directory', type=str, help="Specify path to directory of fitsfiles.", required=True)
+@click.option('-d', '--directory', type=str, help="Specify path to directory of fitsfiles.", required=False)
 @sdi.generator
 def read(directory):
-    paths = glob.glob("{}/*.fits*".format(directory))
+    if directory == None:
+        paths = tkinter.filedialog.askopenfilenames()
+    else:
+        paths = glob.glob("{}/*.fits*".format(directory))
     hduls = [fits.open(p) for p in paths]
     return hduls
 
