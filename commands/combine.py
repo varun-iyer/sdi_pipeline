@@ -31,7 +31,7 @@ def combine(hduls, name="SCI"):
     comb = np.median(data, axis=0)
     hdu = fits.PrimaryHDU(comb)
     hduls_list += [fits.HDUList([hdu])]
-    return [fits.HDUList([hdu])]
+    return fits.HDUList([hdu])
 
 @sdi.cli.command("combine")
 @click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
@@ -50,4 +50,4 @@ def combine_cmd(hduls, name="SCI"):
     :returns: a list with a single hdul representing the median image.
     """
     # FIXME there should be a way to just copy the docstring over
-    return combine(hduls, name)
+    return [combine(hduls, name),]
