@@ -2,13 +2,14 @@ import click
 import sdi
 from astropy.io import fits
 import glob
+import tkinter
 
 @sdi.cli.command("read")
 @click.option('-d', '--directory', type=str, help="Specify path to directory of fitsfiles.", required=False)
 @sdi.generator
 def read(directory):
     if directory == None:
-        paths = tkinter.filedialog.askopenfilenames()
+        paths = glob.glob("{}/*.fits*".format(tkinter.filedialog.askdirectory()))
     else:
         paths = glob.glob("{}/*.fits*".format(directory))
     hduls = [fits.open(p) for p in paths]
