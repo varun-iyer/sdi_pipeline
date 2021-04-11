@@ -13,10 +13,12 @@ def read(directory):
 
 @sdi.cli.command("write")
 @click.option('-d', '--directory', type=str, help="Specify path to directory to save fitsfiles.", default="./")
-@click.option('-f', '--format', type=str, help="Specify string format for filename.", default="{number}.fits")
+@click.option('-f', '--format', "format_", type=str, help="Specify string format for filename.", default="{number}.fits")
 @sdi.operator
-def write(hduls, directory, format):
+def write(hduls, directory, format_):
+    import os
     for i, h in enumerate(hduls):
-        print((directory + format).format(number=i))
-        h.writeto((directory + format).format(number=i))
+        path = os.path.join(directory, format_.format(number=i))
+        click.echo(f"writing hdul to {path}")
+        h.writeto(path)
     return hduls

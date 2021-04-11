@@ -9,8 +9,6 @@ HISTORY
 import click
 import sdi
 import numpy as np
-# types
-from common import to_np, HDU_TYPES
 from astropy.io.fits import PrimaryHDU, HDUList
 #from sources import Source
 import astroalign
@@ -36,15 +34,23 @@ def align(hduls, name="SCI", reference=None):
         reference = snr.snr(hduls_list, name)[name]
     # click.echo(reference.header["ORIGNAME"])
     # FIXME log ref name
-    np_ref = to_np(reference, "Cannot align to unexpected type {}; expected numpy array or FITS HDU")
+    np_ref = reference
+    try:
+        np_ref = np_ref.data
+    except AttributeError:
+        pass
 
     for source in sources:
-        np_src = to_np(source, "Cannot align unexpected type {}; expected numpy array or FITS HDU")
+        np_src = source
+        try:
+            np_src = source.data
+        except AttributeError:
+            pass
         # possibly unneccessary but unsure about scoping
         output = np.array([])
 
         output = astroalign.register(np_src, np_ref)[0]
-        if isinstance(source, HDU_TYPES):
+        if hasattr(source, "data"):
             output = PrimaryHDU(output, source.header)
         outputs.append(HDUList([output]))
 

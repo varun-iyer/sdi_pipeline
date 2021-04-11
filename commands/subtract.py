@@ -2,7 +2,6 @@ import os
 import click
 import ois
 from astropy.io import fits
-from common import to_np
 import sdi
 from .combine import combine
 
@@ -21,11 +20,11 @@ def subtract(hduls, name="SCI"):
     output = []
     outputs = []
     template = combine(hduls, name)["PRIMARY"].data
+     
     for hdu in hduls:
         diff = ois.optimal_system(image=hdu[name].data, refimage=template, method='Bramich')[0]
         output.append(diff)     
 
-    breakpoint()
     for array_set in output:
         # FIXME this is ragingly wrong, multiple items should be associated
         for item in array_set:
