@@ -15,8 +15,9 @@ def run_pipeline(operators):
     """
     # a list of fitsfiles passed through the whole pipeline
     hduls = ()
-    for operator in operators:
-        hduls = operator(hduls)
+    with click.progressbar(operators, length=len(operators)) as ops:
+        for operator in ops:
+            hduls = operator(hduls)
 
     for _ in hduls:
         # do necessary things on overall outputs
