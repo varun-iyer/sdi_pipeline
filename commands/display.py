@@ -5,6 +5,9 @@ import numpy as np
 
 @sdi.cli.command("display")
 @sdi.operator
+def image_cmd(hduls, cats=None, color='green', size=40):
+    return image(hduls,cats,color,size)
+
 def image(hduls, cats=None, color='green', size=40):
     """
     Opens multiple hduls on DS9 with the option of adding circles 
@@ -35,4 +38,3 @@ def image(hduls, cats=None, color='green', size=40):
     d.set("frame delete")
     
     return (hdul for hdul in hduls)
-

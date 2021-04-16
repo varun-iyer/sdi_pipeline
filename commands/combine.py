@@ -9,6 +9,15 @@ import sdi
 import numpy as np
 from astropy.io import fits
 
+@sdi.cli.command("combine")
+@click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
+@sdi.operator
+# TODO add option to pick out a specific table instead of just science
+
+## combine function wrapper
+def combine_cmd(hduls, name="SCI"):
+    return [combine(hduls, name),]
+
 def combine(hduls, name="SCI"):
     """
     Combine takes a pixel-by-pixel median of a set of astronomical data to
@@ -17,7 +26,7 @@ def combine(hduls, name="SCI"):
     will return just one image.
 
     \b
-    :param hduls: list of fits hdul's
+    :param hduls: list of fits hdul
     :param name: the name of the HDU to sum among the HDULS
     :returns: a list with a single hdul representing the median image.
     """
@@ -31,22 +40,3 @@ def combine(hduls, name="SCI"):
     hdu = fits.PrimaryHDU(comb)
     hduls_list += [fits.HDUList([hdu])]
     return fits.HDUList([hdu])
-
-@sdi.cli.command("combine")
-@click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
-@sdi.operator
-# TODO add option to pick out a specific table instead of just science
-def combine_cmd(hduls, name="SCI"):
-    """
-    Combine takes a pixel-by-pixel median of a set of astronomical data to
-    create a template image.
-    Combine is a reduction. This means that the stream will be truncated and it
-    will return just one image.
-
-    \b
-    :param hduls: list of fits hdul's
-    :param name: the name of the HDU to sum among the HDULS
-    :returns: a list with a single hdul representing the median image.
-    """
-    # FIXME there should be a way to just copy the docstring over
-    return [combine(hduls, name),]

@@ -18,13 +18,19 @@ from scripts import snr
 @click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
 @sdi.operator
 #TODO use CAT sources if they exist
+
+## align function wrapper
+def align_cmd(hduls, name="SCI", reference=None):
+    return align([hduls for hduls in hduls],name,reference)
+
+
 def align(hduls, name="SCI", reference=None):
-    """
-    Aligns the source astronomical image(s) to the reference astronomical image
-    \b
-    :param hduls: list of fitsfiles
-    :return: list of fistfiles with <name> HDU aligned
-    """
+    """ 
+    Aligns the source astronomical image(s) to the reference astronomical image 
+    \b 
+    :param hduls: list of fitsfiles 
+    :return: list of fistfiles with <name> HDU aligned 
+    """ 
 
     hduls_list = [hdul for hdul in hduls]
     sources = [hdul[name] for hdul in hduls_list]
