@@ -5,9 +5,6 @@ from astropy.io import fits
 import sdi
 from .combine import combine
 
-@sdi.cli.command("subtract")
-@click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
-@sdi.operator
 def subtract(hduls, name="SCI"):
     """
     Returns differences of a set of images from a template image
@@ -31,3 +28,11 @@ def subtract(hduls, name="SCI"):
             hdu = fits.PrimaryHDU(item)
             outputs.append(fits.HDUList([hdu])) 
     return (hdul for hdul in outputs)
+
+@sdi.cli.command("subtract")
+@click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
+@sdi.operator
+
+## subtract function wrapper
+def subtract_cmd(hduls,name="SCI"):
+    return subtract(hduls, name)

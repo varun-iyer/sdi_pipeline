@@ -9,15 +9,6 @@ import sdi
 import numpy as np
 from astropy.io import fits
 
-@sdi.cli.command("combine")
-@click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
-@sdi.operator
-# TODO add option to pick out a specific table instead of just science
-
-## combine function wrapper
-def combine_cmd(hduls, name="SCI"):
-    return [combine(hduls, name),]
-
 def combine(hduls, name="SCI"):
     """
     Combine takes a pixel-by-pixel median of a set of astronomical data to
@@ -40,3 +31,12 @@ def combine(hduls, name="SCI"):
     hdu = fits.PrimaryHDU(comb)
     hduls_list += [fits.HDUList([hdu])]
     return fits.HDUList([hdu])
+
+@sdi.cli.command("combine")
+@click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
+@sdi.operator
+# TODO add option to pick out a specific table instead of just science
+
+## combine function wrapper
+def combine_cmd(hduls, name="SCI"):
+    return [combine(hduls, name),]
