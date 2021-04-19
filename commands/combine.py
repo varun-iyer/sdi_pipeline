@@ -17,7 +17,7 @@ def combine(hduls, name="SCI"):
     will return just one image.
 
     \b
-    :param hduls: list of fits hdul
+    :param hduls: list of fits hdul's
     :param name: the name of the HDU to sum among the HDULS
     :returns: a list with a single hdul representing the median image.
     """
