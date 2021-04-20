@@ -8,8 +8,13 @@ import tkinter
 @click.option('-d', '--directory', type=str, help="Specify path to directory of fitsfiles.", required=False)
 @sdi.generator
 def read(directory):
+    # add try (evaluate if the try is efficient)
     if directory == None:
-        paths = glob.glob("{}/*.fits*".format(tkinter.filedialog.askdirectory()))
+        try:
+            paths = glob.glob("{}/*.fits*".format(tkinter.filedialog.askdirectory()))
+        except:
+            print("Visual file dialog does not exist, please specify path to directory to save fitsfiles.")
+            quit()
     else:
         paths = glob.glob("{}/*.fits*".format(directory))
     hduls = [fits.open(p) for p in paths]
