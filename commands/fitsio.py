@@ -13,7 +13,7 @@ def read(directory):
         try:
             paths = glob.glob("{}/*.fits*".format(tkinter.filedialog.askdirectory()))
         except:
-            print("Visual file dialog does not exist, please specify path to directory to save fitsfiles.")
+            click.echo("Visual file dialog does not exist, please use option -d and specify path to directory to read fitsfiles.", err=True)
             quit()
     else:
         paths = glob.glob("{}/*.fits*".format(directory))
