@@ -11,10 +11,11 @@ def read(directory):
     # add try (evaluate if the try is efficient)
     if directory == None:
         try:
-            paths = glob.glob("{}/*.fits*".format(tkinter.filedialog.askdirectory()))
+            directory = tkinter.filedialog.askdirectory()
         except:
             click.echo("Visual file dialog does not exist, please use option -d and specify path to directory to read fitsfiles.", err=True)
             quit()
+        paths = glob.glob("{}/*.fits*".format(directory))
     else:
         paths = glob.glob("{}/*.fits*".format(directory))
     hduls = [fits.open(p) for p in paths]
