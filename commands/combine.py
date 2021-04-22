@@ -39,4 +39,15 @@ def combine(hduls, name="SCI"):
 
 ## combine function wrapper
 def combine_cmd(hduls, name="SCI"):
+    """
+    Combine takes a pixel-by-pixel median of a set of astronomical data to
+    create a template image.
+    Combine is a reduction. This means that the stream will be truncated and it
+    will return just one image.
+
+    \b
+    :param hduls: list of fits hdul's
+    :param name: the name of the HDU to sum among the HDULS
+    :returns: a list with a single hdul representing the median image.
+    """
     return [combine(hduls, name),]

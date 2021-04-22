@@ -49,4 +49,4 @@ def generator(func):
         yield from func(*args, **kwargs)
     return operator(update_wrapper(new_func, func))
 
-from commands import align, combine, subtract, snr_function, display, fitsio
+from commands import align, combine, subtract, snr_function, display, write, read

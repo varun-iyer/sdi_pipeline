@@ -59,4 +59,10 @@ def align(hduls, name="SCI", reference=None):
 
 ## align function wrapper
 def align_cmd(hduls, name="SCI", reference=None):
+    """
+    Aligns the source astronomical image(s) to the reference astronomical image
+    \b
+    :param hduls: list of fitsfiles
+    :return: list of fistfiles with <name> HDU aligned
+    """
     return align([hduls for hduls in hduls],name,reference)

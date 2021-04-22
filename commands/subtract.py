@@ -35,4 +35,11 @@ def subtract(hduls, name="SCI"):
 
 ## subtract function wrapper
 def subtract_cmd(hduls,name="SCI"):
+    """
+    Returns differences of a set of images from a template image
+    Arguments:
+        hduls -- list of fits hdul's where the last image is the template
+        name -- name of the HDU to use
+        image that the other images will be subtracted from
+    """
     return subtract(hduls, name)
