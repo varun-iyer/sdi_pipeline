@@ -14,17 +14,13 @@ from astropy.io.fits import PrimaryHDU, HDUList
 import astroalign
 from scripts import snr
 
-@sdi.cli.command("align")
-@click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
-@sdi.operator
-#TODO use CAT sources if they exist
 def align(hduls, name="SCI", reference=None):
-    """
-    Aligns the source astronomical image(s) to the reference astronomical image
-    \b
-    :param hduls: list of fitsfiles
-    :return: list of fistfiles with <name> HDU aligned
-    """
+    """ 
+    Aligns the source astronomical image(s) to the reference astronomical image 
+    \b 
+    :param hduls: list of fitsfiles 
+    :return: list of fistfiles with <name> HDU aligned 
+    """ 
 
     hduls_list = [hdul for hdul in hduls]
     sources = [hdul[name] for hdul in hduls_list]
@@ -55,3 +51,18 @@ def align(hduls, name="SCI", reference=None):
         outputs.append(HDUList([output]))
 
     return (hdul for hdul in outputs)
+
+@sdi.cli.command("align")
+@click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
+@sdi.operator
+#TODO use CAT sources if they exist
+
+## align function wrapper
+def align_cmd(hduls, name="SCI", reference=None):
+    """
+    Aligns the source astronomical image(s) to the reference astronomical image
+    \b
+    :param hduls: list of fitsfiles
+    :return: list of fistfiles with <name> HDU aligned
+    """
+    return align([hduls for hduls in hduls],name,reference)

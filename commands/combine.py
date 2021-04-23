@@ -36,6 +36,8 @@ def combine(hduls, name="SCI"):
 @click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
 @sdi.operator
 # TODO add option to pick out a specific table instead of just science
+
+## combine function wrapper
 def combine_cmd(hduls, name="SCI"):
     """
     Combine takes a pixel-by-pixel median of a set of astronomical data to
@@ -48,5 +50,4 @@ def combine_cmd(hduls, name="SCI"):
     :param name: the name of the HDU to sum among the HDULS
     :returns: a list with a single hdul representing the median image.
     """
-    # FIXME there should be a way to just copy the docstring over
     return [combine(hduls, name),]

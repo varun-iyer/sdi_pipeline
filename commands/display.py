@@ -3,8 +3,6 @@ import click
 from pyds9 import DS9
 import numpy as np
 
-@sdi.cli.command("display")
-@sdi.operator
 def image(hduls, cats=None, color='green', size=40):
     """
     Opens multiple hduls on DS9 with the option of adding circles 
@@ -34,5 +32,19 @@ def image(hduls, cats=None, color='green', size=40):
     d.set("frame first")
     d.set("frame delete")
     
-    return (hdul for hdul in hduls)
+    return (hdul for hdul in hdulsi)
 
+@sdi.cli.command("display")
+@sdi.operator
+def image_cmd(hduls, cats=None, color='green', size=40):
+    """
+    Opens multiple hduls on DS9 with the option of adding circles
+    to the images via numpy arrays.
+    Arguments:
+        hduls -- list of hduls
+    Keyword arguments:
+        cats -- list of 2xN numpy arrays (default None)
+        color -- color of circles (default 'green')
+        size -- size of circles (default 40)
+    """
+    return image(hduls,cats,color,size)
