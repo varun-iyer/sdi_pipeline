@@ -2,7 +2,7 @@ import click
 import sdi
 from astropy.io import fits
 import glob
-import tkinter
+from tkinter.filedialog import askdirectory
 
 @sdi.cli.command("read")
 @click.option('-d', '--directory', type=str, help="Specify path to directory of fitsfiles.", required=False)
@@ -11,7 +11,7 @@ def read(directory):
     # add try (evaluate if the try is efficient)
     if directory == None:
         try:
-            directory = tkinter.filedialog.askdirectory()
+            directory = askdirectory()
         except:
             click.echo("Visual file dialog does not exist, please use option -d and specify path to directory to read fitsfiles.", err=True)
             quit()
