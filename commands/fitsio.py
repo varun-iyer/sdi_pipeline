@@ -15,9 +15,7 @@ def read(directory):
         except:
             click.echo("Visual file dialog does not exist, please use option -d and specify path to directory to read fitsfiles.", err=True)
             quit()
-        paths = glob.glob("{}/*.fits*".format(directory))
-    else:
-        paths = glob.glob("{}/*.fits*".format(directory))
+    paths = glob.glob("{}/*.fits*".format(directory))
     hduls = [fits.open(p) for p in paths]
     return hduls
 
