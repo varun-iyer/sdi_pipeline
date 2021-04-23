@@ -5,7 +5,7 @@ History:
         Andrew Bluth <abluth@ucsb.edu>
 """
 import click
-import sdi
+import cli
 import numpy as np
 from astropy.io import fits
 
@@ -32,9 +32,9 @@ def combine(hduls, name="SCI"):
     hduls_list += [fits.HDUList([hdu])]
     return fits.HDUList([hdu])
 
-@sdi.cli.command("combine")
+@cli.cli.command("combine")
 @click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
-@sdi.operator
+@cli.operator
 # TODO add option to pick out a specific table instead of just science
 def combine_cmd(hduls, name="SCI"):
     """

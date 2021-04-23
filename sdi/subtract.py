@@ -2,12 +2,12 @@ import os
 import click
 import ois
 from astropy.io import fits
-import sdi
+import cli
 from .combine import combine
 
-@sdi.cli.command("subtract")
+@cli.cli.command("subtract")
 @click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
-@sdi.operator
+@cli.operator
 def subtract(hduls, name="SCI"):
     """
     Returns differences of a set of images from a template image

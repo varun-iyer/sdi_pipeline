@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="sdi",
+    name="sdi-cli",
     version="0.99",
     py_modules=["sdi"],
     # packages=find_packages(include=["openfits"]),
