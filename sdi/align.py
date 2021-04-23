@@ -12,7 +12,7 @@ import numpy as np
 from astropy.io.fits import PrimaryHDU, HDUList
 #from sources import Source
 import astroalign
-from scripts import snr
+from _scripts import snr
 
 @cli.cli.command("align")
 @click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
