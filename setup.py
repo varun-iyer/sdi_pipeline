@@ -9,6 +9,6 @@ setup(
     install_requires=["click", "astropy", "photutils", "ois", "pyds9", "astroalign"],
     entry_points="""
         [console_scripts]
-        sdi=sdi:cli
+        sdi=cli:cli
     """,
 )
