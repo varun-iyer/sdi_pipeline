@@ -1,6 +1,6 @@
 import sys
 import click
-import sdi
+import cli
 from astropy.io import fits
 import glob
 from tkinter.filedialog import askdirectory
@@ -27,18 +27,18 @@ def write(hduls, directory, format_):
         h.writeto(path)
     return hduls
 
-@sdi.cli.command("write")
+@cli.cli.command("write")
 @click.option('-d', '--directory', type=str, help="Specify path to directory to save fitsfiles.", default="./")
 @click.option('-f', '--format', "format_", type=str, help="Specify string format for filename.", default="{number}.fits")
-@sdi.operator
+@cli.operator
 
 ## write function wrapper
 def write_cmd(hduls, directory, format_):
     return write(hduls, directory, format_)
 
-@sdi.cli.command("read")
+@cli.cli.command("read")
 @click.option('-d', '--directory', type=str, help="Specify path to directory of fitsfiles.", required=True)
-@sdi.generator
+@cli.generator
 
 ## read function wrapper
 def read_cmd(directory):

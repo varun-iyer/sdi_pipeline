@@ -11,7 +11,7 @@ from glob import glob
 import sys as sys
 from photutils import Background2D, DAOStarFinder, detect_threshold, detect_sources, source_properties
 import matplotlib.pyplot as plt
-import sdi
+import cli
 import click
 
 def snr(hduls, name="SCI"):
@@ -45,9 +45,9 @@ def snr(hduls, name="SCI"):
 
 	return (hdul for hdul in hduls)
 
-@sdi.cli.command("snr")
+@cli.cli.command("snr")
 @click.option("-n", "--name", default="SCI", help="The HDU to calculate for")
-@sdi.operator
+@cli.operator
 
 ## snr function wrapper
 def snr_cmd(hduls, name="SCI"):

@@ -2,7 +2,7 @@ import os
 import click
 import ois
 from astropy.io import fits
-import sdi
+import cli
 from .combine import combine
 
 def subtract(hduls, name="SCI"):
@@ -29,9 +29,9 @@ def subtract(hduls, name="SCI"):
             outputs.append(fits.HDUList([hdu])) 
     return (hdul for hdul in outputs)
 
-@sdi.cli.command("subtract")
+@cli.cli.command("subtract")
 @click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
-@sdi.operator
+@cli.operator
 
 ## subtract function wrapper
 def subtract_cmd(hduls,name="SCI"):

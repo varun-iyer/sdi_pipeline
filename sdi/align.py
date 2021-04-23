@@ -7,7 +7,7 @@ HISTORY
 # general imports
 
 import click
-import sdi
+import cli
 import numpy as np
 from astropy.io.fits import PrimaryHDU, HDUList
 #from sources import Source
@@ -52,9 +52,9 @@ def align(hduls, name="SCI", reference=None):
 
     return (hdul for hdul in outputs)
 
-@sdi.cli.command("align")
+@cli.cli.command("align")
 @click.option("-n", "--name", default="SCI", help="The HDU to be aligned.")
-@sdi.operator
+@cli.operator
 #TODO use CAT sources if they exist
 
 ## align function wrapper
