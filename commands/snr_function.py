@@ -14,9 +14,6 @@ import matplotlib.pyplot as plt
 import sdi
 import click
 
-@sdi.cli.command("snr")
-@click.option("-n", "--name", default="SCI", help="The HDU to calculate for")
-@sdi.operator
 def snr(hduls, name="SCI"):
 
 	for hdul in hduls:
@@ -48,5 +45,10 @@ def snr(hduls, name="SCI"):
 
 	return (hdul for hdul in hduls)
 
+@sdi.cli.command("snr")
+@click.option("-n", "--name", default="SCI", help="The HDU to calculate for")
+@sdi.operator
 
-
+## snr function wrapper
+def snr_cmd(hduls, name="SCI"):
+    return snr(hduls, name)
