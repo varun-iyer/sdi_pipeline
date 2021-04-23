@@ -1,10 +1,18 @@
+import sys
 import click
 import sdi
 from astropy.io import fits
 import glob
-import sys
+from tkinter.filedialog import askdirectory
 
 def read(directory):
+    # add try (evaluate if the try is efficient)
+    if directory == None:
+        try:
+            directory = askdirectory()
+        except:
+            click.echo("Visual file dialog does not exist, please use option -d and specify path to directory to read fitsfiles.", err=True)
+            quit()
     paths = glob.glob("{}/*.fits*".format(directory))
     if not paths:
         sys.exit("No fits files in directory")

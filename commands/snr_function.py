@@ -20,7 +20,7 @@ def snr(hduls, name="SCI"):
 		data = hdul[name].data
 
 		# identify background rms
-		boxsize=(shape)
+		boxsize=(data.shape)
 		bkg = Background2D(data, boxsize)
 		bkg_mean_rms = np.mean(bkg.background_rms)
 
@@ -42,7 +42,6 @@ def snr(hduls, name="SCI"):
 		noise = bkg_mean_rms
 		SNR = (signal)/(noise)
 		hdul["CAT"].header.append(('SNR',SNR,"signal to noise ratio" ))
-
 
 	return (hdul for hdul in hduls)
 
