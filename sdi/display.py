@@ -3,7 +3,7 @@ import click
 from pyds9 import DS9
 import numpy as np
 
-def image(hduls, cats=None, color='green', size=40):
+def display(hduls, cats=None, color='green', size=40):
     """
     Opens multiple hduls on DS9 with the option of adding circles 
     to the images via numpy arrays.
@@ -36,7 +36,7 @@ def image(hduls, cats=None, color='green', size=40):
 
 @cli.cli.command("display")
 @cli.operator
-def image_cmd(hduls, cats=None, color='green', size=40):
+def display_cmd(hduls, cats=None, color='green', size=40):
     """
     Opens multiple hduls on DS9 with the option of adding circles
     to the images via numpy arrays.
