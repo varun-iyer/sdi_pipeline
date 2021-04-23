@@ -11,7 +11,7 @@ from glob import glob
 import sys as sys
 from photutils import Background2D, DAOStarFinder, detect_threshold, detect_sources, source_properties
 import matplotlib.pyplot as plt
-import cli
+from . import _cli as cli
 import click
 
 def snr(hduls, name="SCI"):

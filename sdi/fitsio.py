@@ -1,6 +1,6 @@
 import sys
 import click
-import cli
+from . import _cli as cli
 from astropy.io import fits
 import glob
 from tkinter.filedialog import askdirectory

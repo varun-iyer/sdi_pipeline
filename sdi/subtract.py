@@ -2,7 +2,7 @@ import os
 import click
 import ois
 from astropy.io import fits
-import cli
+from . import _cli as cli
 from .combine import combine
 
 def subtract(hduls, name="SCI"):

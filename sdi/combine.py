@@ -5,7 +5,8 @@ History:
         Andrew Bluth <abluth@ucsb.edu>
 """
 import click
-import cli
+from . import _cli as cli
+ 
 import numpy as np
 from astropy.io import fits
 

@@ -7,7 +7,7 @@ HISTORY
 # general imports
 
 import click
-import cli
+from . import _cli as cli
 import numpy as np
 from astropy.io.fits import PrimaryHDU, HDUList
 #from sources import Source

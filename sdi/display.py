@@ -1,4 +1,4 @@
-import cli
+from . import _cli as cli
 import click
 from pyds9 import DS9
 import numpy as np
