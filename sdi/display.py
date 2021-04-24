@@ -15,12 +15,14 @@ def display(hduls, cats=None, color='green', size=40):
     """
     ds9 = DS9()
     ds9.set("scale mode zscale")
+    # TODO Make this a real generator
+    hduls = [h for h in hduls]
     try:
         cats = [hdul[cats].data for hdul in hduls]
     except (KeyError, AttributeError, IndexError):
         pass
     if cats is None:
-        cats = [()] * len(hduls)
+        cats = (() for _ in hduls)
 
     for hdul, cat in zip(hduls, cats):
         ds9.set("frame new")
@@ -36,15 +38,15 @@ def display(hduls, cats=None, color='green', size=40):
     return (hdul for hdul in hduls)
 
 @cli.cli.command("display")
-@click.option("-e", "--cat_ext", default=None, type=(str, int), \
-              help="(EXTNAME, EXTVER) for a TableHDU in each HDUL which "
+@click.option("-e", "--cat_ext", type=str, \
+              help="EXTNAME for a TableHDU in each HDUL which "
               "contains a record array of sources to circle in ds9.")
 @click.option("-c", "--color", default="green", help="A string color to draw"
               "circles in, e.g. 'green'")
 @click.option("-s", "--size", default=40, help="The radius of the circles"
               "drawn", type=int)
 @cli.operator
-def display_cmd(hduls, cat_ext, color, size):
+def display_cmd(hduls, cat_ext=None, color="green", size=40):
     """
     Opens multiple hduls on DS9 with the option of circling sources.
     from fits catalog tables.
