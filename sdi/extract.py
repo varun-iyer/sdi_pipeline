@@ -45,8 +45,7 @@ def extract(hduls, stddev_thresh=3.0, read_ext=0, write_ext="XRT"):
             pass
         hdul.append(fits.BinTableHDU(data=sources, header=header,
                                      name=extname, ver=extver))
-
-    return hduls
+        yield hdul
 
 @cli.cli.command("extract")
 @click.option("-t", "--threshold", default=3.0,
