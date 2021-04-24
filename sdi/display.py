@@ -5,46 +5,49 @@ import numpy as np
 
 def display(hduls, cats=None, color='green', size=40):
     """
-    Opens multiple hduls on DS9 with the option of adding circles 
-    to the images via numpy arrays.
-    Arguments:
-        hduls -- list of hduls
-    Keyword arguments:
-        cats -- list of 2xN numpy arrays (default None)
-        color -- color of circles (default 'green')
-        size -- size of circles (default 40)
+    Opens a series of HDU Images on ds9, optionally with circled catalogs.
+    :param hduls: list of HDUL to display
+    :param cats: numpy recarray of catalog data to use. if it is a string or
+        integer, it will be assumed that it refers to a specific BinTableHDU
+        in the provided HDULists.
+    :param color: color to circle things in
+    :param size: size of circles
     """
-    d = DS9()
-    d.set("scale mode zscale")
-    if cats == None:
-        for hdul in hduls:
-            d.set("frame new")
-            d.set_pyfits(hdul)
-            d.set("zoom to fit")
-    else:
-        stuff = zip(hduls, cats)
-        for hdul, cat in stuff:
-            d.set("frame new")
-            d.set_pyfits(hdul)
-            d.set("zoom to fit")
-            for coord in cat:
-                d.set('regions command {{circle {} {} {} #color={}}}'.format(coord[0], coord[1], size, color))
-    d.set("frame first")
-    d.set("frame delete")
+    ds9 = DS9()
+    ds9.set("scale mode zscale")
+    try:
+        cats = [hdul[cats].data for hdul in hduls]
+    except (KeyError, AttributeError, IndexError):
+        pass
+    if cats is None:
+        cats = [()] * len(hduls)
+
+    for hdul, cat in zip(hduls, cats):
+        ds9.set("frame new")
+        ds9.set_pyfits(hdul)
+        ds9.set("zoom to fit")
+        for source in cat:
+            ds9.set('regions command {{circle {} {} {} #color={}}}' \
+                    .format(source['x'], source['y'], size, color))
+
+    ds9.set("frame first")
+    ds9.set("frame delete")
     
-    return (hdul for hdul in hdulsi)
+    return (hdul for hdul in hduls)
 
 @cli.cli.command("display")
+@click.option("-e", "--cat_ext", default=None, type=(str, int), \
+              help="(EXTNAME, EXTVER) for a TableHDU in each HDUL which "
+              "contains a record array of sources to circle in ds9.")
+@click.option("-c", "--color", default="green", help="A string color to draw"
+              "circles in, e.g. 'green'")
+@click.option("-s", "--size", default=40, help="The radius of the circles"
+              "drawn", type=int)
 @cli.operator
-def display_cmd(hduls, cats=None, color='green', size=40):
+def display_cmd(hduls, cat_ext, color, size):
     """
-    Opens multiple hduls on DS9 with the option of adding circles
-    to the images via numpy arrays.
-    Arguments:
-        hduls -- list of hduls
-    Keyword arguments:
-        cats -- list of 2xN numpy arrays (default None)
-        color -- color of circles (default 'green')
-        size -- size of circles (default 40)
+    Opens multiple hduls on DS9 with the option of circling sources.
+    from fits catalog tables.
+    Continues to pass unmodified hduls down the chain
     """
-    return image(hduls,cats,color,size)
+    return display(hduls, cat_ext, color, size)
