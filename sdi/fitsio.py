@@ -6,16 +6,7 @@ import glob
 from tkinter.filedialog import askdirectory
 
 def read(directory):
-    # add try (evaluate if the try is efficient)
-    if directory == None:
-        try:
-            directory = askdirectory()
-        except:
-            click.echo("Visual file dialog does not exist, please use option -d and specify path to directory to read fitsfiles.", err=True)
-            quit()
     paths = glob.glob("{}/*.fits*".format(directory))
-    if not paths:
-        sys.exit("No fits files in directory")
     hduls = [fits.open(p) for p in paths]
     return hduls
 
@@ -31,15 +22,24 @@ def write(hduls, directory, format_):
 @click.option('-d', '--directory', type=str, help="Specify path to directory to save fitsfiles.", default="./")
 @click.option('-f', '--format', "format_", type=str, help="Specify string format for filename.", default="{number}.fits")
 @cli.operator
-
 ## write function wrapper
 def write_cmd(hduls, directory, format_):
     return write(hduls, directory, format_)
 
 @cli.cli.command("read")
-@click.option('-d', '--directory', type=str, help="Specify path to directory of fitsfiles.", required=True)
+@click.option('-d', '--directory', type=str, help="Specify path to directory of fitsfiles.", required=False)
 @cli.generator
-
 ## read function wrapper
 def read_cmd(directory):
-    return read(directory)
+    # add try (evaluate if the try is efficient)
+    if directory is None:
+        try:
+            directory = askdirectory()
+        except:
+            click.echo("Visual file dialog does not exist, please use option -d and specify path to directory to read fitsfiles.", err=True)
+            sys.exit()
+    hduls = read(directory)
+    if hduls:
+        return hduls
+    else:
+        sys.exit(f"Could not open fitsfiles from directory {directory}")
