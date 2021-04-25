@@ -6,11 +6,17 @@ import glob
 from tkinter.filedialog import askdirectory
 
 def read(directory):
+    """
+    Takes a directory containing fits files and returns them as a list
+    """
     paths = glob.glob("{}/*.fits*".format(directory))
     hduls = [fits.open(p) for p in paths]
     return hduls
 
 def write(hduls, directory, format_):
+    """
+    Writes all given hduls into the directory specified
+    """
     import os
     for i, h in enumerate(hduls):
         path = os.path.join(directory, format_.format(number=i))
@@ -24,6 +30,9 @@ def write(hduls, directory, format_):
 @cli.operator
 ## write function wrapper
 def write_cmd(hduls, directory, format_):
+    """
+    Writes all given hduls into the directory specified
+    """
     return write(hduls, directory, format_)
 
 @cli.cli.command("read")
@@ -31,6 +40,9 @@ def write_cmd(hduls, directory, format_):
 @cli.generator
 ## read function wrapper
 def read_cmd(directory):
+    """
+    Takes a directory containing fits files and returns them as a list
+    """
     # add try (evaluate if the try is efficient)
     if directory is None:
         try:
