@@ -49,5 +49,3 @@ def generator(func):
         yield from hduls
         yield from func(*args, **kwargs)
     return operator(update_wrapper(new_func, func))
-
-from . import *
