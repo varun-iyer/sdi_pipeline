@@ -30,7 +30,7 @@ class TestRead(unittest.TestCase):
     def test_tk(self):
         runner = CliRunner()
         result = runner.invoke(sdi._read_cmd)
-        print(result.output)
+        # FIXME figure out how to do click right
 
 if __name__ == "__main__":
     unittest.main()
