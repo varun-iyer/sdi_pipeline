@@ -4,3 +4,8 @@ from .display import display
 from .fitsio import read, write
 from .subtract import subtract
 from .extract import extract
+from . import test
+
+# in order to test click commands
+from .fitsio import read_cmd as _read_cmd
+from .fitsio import write_cmd as _write_cmd
