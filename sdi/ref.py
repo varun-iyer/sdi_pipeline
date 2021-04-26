@@ -13,6 +13,11 @@ import astropy.units as u
 from astropy.io import fits
 from . import _cli as cli
 
+# define specific columns so we don't get dtype issues from the chaff
+COLUMNS = ["source_id", "ra", "ra_error", "dec", "dec_error",
+           "phot_g_mean_flux", "phot_g_mean_flux_error", "phot_g_mean_mag",
+           "phot_rp_mean_flux", "phot_rp_mean_flux_error", "phot_rp_mean_mag"]
+
 def _in_cone(coord: SkyCoord, cone_center: SkyCoord, cone_radius: u.degree):
     """
     Checks if SkyCoord coord is in the cone described by conecenter and
@@ -20,9 +25,9 @@ def _in_cone(coord: SkyCoord, cone_center: SkyCoord, cone_radius: u.degree):
     """
     d = (coord.ra - cone_center.ra) ** 2 + (coord.dec - cone_center.dec) ** 2
     # The 0.0001 so we don't get edge effects
-    return d < ((cone_radius - u.Quantity(0.05, u.deg)) ** 2)
+    return d < (cone_radius ** 2)
 
-def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
+def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.001):
     """
     add information about remote reference stars to a 'REF' BinTableHDU
     \b
@@ -47,7 +52,7 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
     cached_coords = []
     cached_table = np.array([])
 
-    radius = u.Quantity(threshold * 2, u.deg)
+    radius = u.Quantity(threshold * 20, u.deg)
     threshold = u.Quantity(threshold, u.deg)
     # we need this to track blanks till we know the dtype
     initial_empty = 0
@@ -61,15 +66,15 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
 
             ########### Query an area if we have not done so already ###########
             # Check to see if we've queried the area
-            if not any((_in_cone(coord, query, radius) \
+            if not any((_in_cone(coord, query, radius - 2 * threshold) \
                         for query in queried_coords)):
                 # we have never queried the area. Do a GAIA cone search
-                data = Gaia.cone_search_async(coord, radius,
+                data = Gaia.cone_search_async(coord, radius, columns=COLUMNS,
                                               output_format="csv").get_results()
                 data = data.as_array()
                 # add the cache table to the data
                 if len(cached_table):
-                    cached_table = np.hstack((cached_table, data.data))
+                    cached_table = np.hstack((data.data, cached_table))
                 else:
                     cached_table = data.data
                 for d in data:
@@ -106,7 +111,6 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
         ########## After going through all sources, add an HDU #################
         extname = write_ext
         header = fits.Header([fits.Card("HISTORY", "From the GAIA remote db")])
-        breakpoint()
         hdul.append(fits.BinTableHDU(data=output_table, header=header,
                                      name=extname))
         yield hdul
@@ -118,7 +122,7 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
 @click.option("-t", "--threshold", default=0.001, type=float,
               help="The threshold in degrees for a cone search")
 @cli.operator
-def ref_cmd(hduls, read_ext="CAT", write_ext="REF"):
+def ref_cmd(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
     """
     add information about remote reference stars to a 'REF' BinTableHDU
     \b
