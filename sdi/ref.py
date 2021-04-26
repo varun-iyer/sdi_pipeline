@@ -21,7 +21,7 @@ def _in_cone(coord: SkyCoord, cone_center: SkyCoord, cone_radius: u.degree):
     """
     d = (coord.ra - cone_center.ra) ** 2 + (coord.dec - cone_center.dec) ** 2
     # The 0.0001 so we don't get edge effects
-    return d < ((cone_radius - 0.05) ** 2)
+    return d < ((cone_radius - u.Quantity(0.05, u.deg)) ** 2)
 
 def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
     """
@@ -35,17 +35,19 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
     any(hduls[0]['REF'].data[0]) will be False.
 
     :param hdul: A collection or generator of HDUL
-    :param read_ext: the HDU extname to read source information from. Must include 'ra' and 'dec' fields.
+    :param read_ext: the HDU extname to read source information from.
+        Must include 'ra' and 'dec' fields.
     :param write_ext: the HDU extname to write reference information from.
     """
 
     blank_result = Gaia.cone_search_async(SkyCoord(0, 0, unit=(u.deg,)*2),
                                           radius=u.Quantity(0, u.deg))
     gaia_dtype = blank_result.get_results().as_array().dtype
+    breakpoint()
 
     queried_coords = []
-    cached_coords = None
-    cache_table = np.recarray(shape=0, dtype=gaia_dtype)
+    cached_coords = []
+    cached_table = np.recarray(shape=0, dtype=gaia_dtype)
 
     radius = u.Quantity(threshold * 100, u.deg)
     threshold = u.Quantity(threshold, u.deg)
@@ -59,8 +61,8 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
 
             ########### Query an area if we have not done so already ###########
             # Check to see if we've queried the area
-            if not any([_in_cone(coord, query, radius) \
-                        for query in queried_coords]):
+            if not any((_in_cone(coord, query, radius) \
+                        for query in queried_coords)):
                 # we have never queried the area. Do a GAIA cone search
                 data = Gaia.cone_search_async(coord, radius).get_results()
                 for d in data:
@@ -68,13 +70,14 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
                     cached_coords.append(SkyCoord(d["ra"], d["dec"],
                                          unit=(u.deg, u.deg)))
                 # add the cache table to the data
-                np.hstack((cache_table, data))
+                cached_table = np.hstack((cached_table, data))
+                breakpoint()
                 # note that we have now queried this arrea
-                queried.append(coord)
+                queried_coords.append(coord)
 
             ########### Look through our cache for matches #####################
             appended = False
-            for ct, cs in zip(cached_table, cached_sources):
+            for ct, cs in zip(cached_table, cached_coords):
                 # look through the cache to find a match
                 if _in_cone(coord, cs, threshold):
                     # if we find a match, copy it to the output table
@@ -94,7 +97,7 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
         hdul.append(fits.BinTableHDU(data=output_table, header=header,
                                      name=extname))
         yield hdul
-
+    return
 
 @cli.cli.command("ref")
 @click.option("-r", "--read-ext", default="CAT", help="The HDU to match")
