@@ -11,7 +11,6 @@ import numpy as np
 from astropy.coordinates import SkyCoord
 import astropy.units as u
 from astropy.io import fits
-from astroquery.gaia import Gaia
 from . import _cli as cli
 
 def _in_cone(coord: SkyCoord, cone_center: SkyCoord, cone_radius: u.degree):
@@ -39,21 +38,22 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
         Must include 'ra' and 'dec' fields.
     :param write_ext: the HDU extname to write reference information from.
     """
-
-    blank_result = Gaia.cone_search_async(SkyCoord(0, 0, unit=(u.deg,)*2),
-                                          radius=u.Quantity(0, u.deg))
-    gaia_dtype = blank_result.get_results().as_array().dtype
-    breakpoint()
+    # This import is here because the GAIA import slows down `import sdi`
+    # substantially; we don't want to import it unless we need it
+    from astroquery.gaia import Gaia
+    Gaia.ROW_LIMIT = -1
 
     queried_coords = []
     cached_coords = []
-    cached_table = np.recarray(shape=0, dtype=gaia_dtype)
+    cached_table = np.array([])
 
-    radius = u.Quantity(threshold * 100, u.deg)
+    radius = u.Quantity(threshold * 2, u.deg)
     threshold = u.Quantity(threshold, u.deg)
+    # we need this to track blanks till we know the dtype
+    initial_empty = 0
     for hdul in hduls:
         sources = hdul[read_ext].data
-        output_table = np.recarray(shape=0, dtype=gaia_dtype)
+        output_table = np.array([])
         for source in sources:
             ra = source["ra"]
             dec = source["dec"]
@@ -64,14 +64,18 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
             if not any((_in_cone(coord, query, radius) \
                         for query in queried_coords)):
                 # we have never queried the area. Do a GAIA cone search
-                data = Gaia.cone_search_async(coord, radius).get_results()
+                data = Gaia.cone_search_async(coord, radius,
+                                              output_format="csv").get_results()
+                data = data.as_array()
+                # add the cache table to the data
+                if len(cached_table):
+                    cached_table = np.hstack((cached_table, data.data))
+                else:
+                    cached_table = data.data
                 for d in data:
                     # construct Coord objects for the new data
                     cached_coords.append(SkyCoord(d["ra"], d["dec"],
                                          unit=(u.deg, u.deg)))
-                # add the cache table to the data
-                cached_table = np.hstack((cached_table, data))
-                breakpoint()
                 # note that we have now queried this arrea
                 queried_coords.append(coord)
 
@@ -81,19 +85,28 @@ def ref(hduls, read_ext="CAT", write_ext="REF", threshold=0.05):
                 # look through the cache to find a match
                 if _in_cone(coord, cs, threshold):
                     # if we find a match, copy it to the output table
-                    output_table = np.hstack((output_table, np.copy(ct)))
+                    if len(output_table):
+                        output_table = np.hstack((output_table, np.copy(ct)))
+                    else:
+                        output_table = np.copy(ct)
+                        output_table = np.hstack((np.empty(shape=initial_empty,
+                                       dtype=output_table.dtype), output_table))
                     appended = True
                     break
 
             ########### Add a blank if we didn't find anything #################
             if not appended:
-                # If we do not find one cached, then add a blank
-                blank = np.empty(shape=0, dtype=gaia_dtype)
-                output_table = np.hstack((output_table, blank))
+                if len(output_table):
+                    # If we do not find one cached, then add a blank
+                    blank = np.empty(shape=0, dtype=output_table.dtype)
+                    output_table = np.hstack((output_table, blank))
+                else:
+                    initial_empty += 1
 
         ########## After going through all sources, add an HDU #################
         extname = write_ext
         header = fits.Header([fits.Card("HISTORY", "From the GAIA remote db")])
+        breakpoint()
         hdul.append(fits.BinTableHDU(data=output_table, header=header,
                                      name=extname))
         yield hdul
